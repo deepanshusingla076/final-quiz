@@ -1,10 +1,18 @@
 # QWIZZ - Interactive Quiz Platform
 
+<<<<<<< HEAD
 QWIZZ is a modern, scalable online quiz platform built with a microservices architecture. It features AI-powered quiz generation, robust authentication, analytics, and a beautiful neo-brutalist UI. The platform supports role-based access for teachers and students, enabling seamless quiz creation, taking, and performance tracking.
 
 ---
 
 ## 🏗️ System Architecture
+=======
+QWIZZ is a modern, scalable online quiz platform built with a microservices architecture. It features AI-powered quiz generation, robust authentication, analytics, and a beautiful neo-brutalist UI.
+
+---
+
+## 🏗️ Architecture Overview
+>>>>>>> bd15782c414931367642ad74303b1c11ba7244df
 
 ```
 ┌───────────────┐    ┌───────────────┐    ┌───────────────┐
@@ -12,11 +20,20 @@ QWIZZ is a modern, scalable online quiz platform built with a microservices arch
 │   (3000)      │────│   (8080)      │────│   (8761)      │
 └───────────────┘    └───────────────┘    └───────────────┘
         │                   │                   │
+<<<<<<< HEAD
+=======
+        │                   │                   │
+>>>>>>> bd15782c414931367642ad74303b1c11ba7244df
         ▼                   ▼                   ▼
 ┌───────────────┐ ┌───────────────┐ ┌───────────────┐ ┌───────────────┐
 │ User Service  │ │ Question Bank │ │ Result Svc    │ │ Analytics Svc │
 │   (8083)      │ │   (8081)      │ │   (8082)      │ │   (8084)      │
 └───────────────┘ └───────────────┘ └───────────────┘ └───────────────┘
+<<<<<<< HEAD
+=======
+        │                   │                   │                   │
+        └───────────────────┴───────────────────┴───────────────────┘
+>>>>>>> bd15782c414931367642ad74303b1c11ba7244df
                         │
                         ▼
                   ┌───────────────┐
@@ -24,6 +41,7 @@ QWIZZ is a modern, scalable online quiz platform built with a microservices arch
                   └───────────────┘
 ```
 
+<<<<<<< HEAD
 ### How It Works
 - **Frontend (React)**: Single-page application handling user interactions, routing, and UI rendering.
 - **API Gateway**: Central entry point for all client requests, handling authentication, CORS, load balancing, and routing to appropriate microservices.
@@ -278,11 +296,24 @@ gemini.api.url=https://generativelanguage.googleapis.com/v1beta/models/gemini-1.
 - Result Service: 8082
 - Analytics Service: 8084
 - Frontend: 3000
+=======
+---
+
+## ✨ Key Features
+
+- AI-powered quiz generation (Google Gemini integration)
+- Microservices architecture (Spring Boot, Spring Cloud, Eureka)
+- JWT authentication & role-based access control
+- Analytics dashboard for teachers & students
+- Neo-brutalist, responsive React UI
+- Secure, scalable, and production-ready
+>>>>>>> bd15782c414931367642ad74303b1c11ba7244df
 
 ---
 
 ## 🛠️ Technology Stack
 
+<<<<<<< HEAD
 **Backend**:
 - **Java 21 LTS**: Latest LTS version with modern features like records, text blocks, and improved performance.
 - **Spring Boot 3.3.x**: Framework for building microservices, with auto-configuration and embedded Tomcat.
@@ -320,6 +351,52 @@ gemini.api.url=https://generativelanguage.googleapis.com/v1beta/models/gemini-1.
 **External Services**:
 - **Google Gemini API**: AI model for generating quiz questions.
 - **MySQL Workbench**: Database design and management tool.
+=======
+**Backend:**
+- Java 21 LTS
+- Spring Boot 3.3.x
+- Spring Cloud 2023.0.x
+- Spring Security, Spring Data JPA
+- MySQL 8.0
+- Maven 3.9+
+
+**Frontend:**
+- React 18.2.0
+- TailwindCSS, React Router v6
+- Axios, Framer Motion
+
+**DevOps:**
+- Maven, Git, Docker (optional)
+
+---
+
+## 📦 Microservices
+
+- **API Gateway:** Central entry point, CORS, JWT, routing
+- **Eureka Server:** Service discovery
+- **User Service:** Auth, user management
+- **Question Bank Service:** Quiz/question CRUD, AI generation
+- **Result Service:** Quiz results, leaderboards
+- **Analytics Service:** Performance analytics
+
+---
+
+## 🎨 UI & Design
+
+- Neo-brutalist, high-contrast, accessible design
+- Responsive for desktop, tablet, mobile
+- Custom React components, smooth animations
+
+---
+
+## 🚀 Quick Start
+
+1. Install Java 21+, Node.js 16+, Maven 3.9+, MySQL 8.0+
+2. Create MySQL database `quiz_apc`
+3. Update DB credentials in each service's `application.properties`
+4. Run `start.bat` (Windows) or start services manually
+5. Access the app at [http://localhost:3000](http://localhost:3000)
+>>>>>>> bd15782c414931367642ad74303b1c11ba7244df
 
 ---
 
@@ -328,6 +405,7 @@ gemini.api.url=https://generativelanguage.googleapis.com/v1beta/models/gemini-1.
 ```
 quiz-apc/
 ├── backend/
+<<<<<<< HEAD
 │   ├── api-gateway/          # API Gateway service
 │   ├── eureka-server/        # Service discovery
 │   ├── user-service/         # Auth & users
@@ -375,6 +453,19 @@ quiz-apc/
 - **Eureka Dashboard**: http://localhost:8761 for service health.
 - **Spring Actuator**: `/actuator/health` on each service for metrics.
 - **Logs**: Check console output for errors and debugging.
+=======
+│   ├── api-gateway/
+│   ├── eureka-server/
+│   ├── user-service/
+│   ├── question-bank-service/
+│   ├── result-service/
+│   └── analytics-service/
+├── frontend/
+├── start.bat
+├── stop.bat
+└── README.md
+```
+>>>>>>> bd15782c414931367642ad74303b1c11ba7244df
 
 ---
 
