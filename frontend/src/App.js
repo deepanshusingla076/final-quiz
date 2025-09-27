@@ -1,7 +1,7 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import PublicRoute from './components/PublicRoute';
 
@@ -21,142 +21,9 @@ import NotFound from './pages/NotFound';
 // Styles
 import './App.css';
 
-function App() {
-  return (
-    <AuthProvider>
-      <Router>
-        <div className="App">
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              duration: 4000,
-              style: {
-                border: '3px solid #000',
-                boxShadow: '4px 4px 0px #000',
-                fontWeight: 'bold',
-              },
-              success: {
-                style: {
-                  background: '#00F5A0',
-                  color: '#000',
-                },
-              },
-              error: {
-                style: {
-                  background: '#FF5E5B',
-                  color: '#fff',
-                },
-              },
-            }}
-          />
-          
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<LandingPage />} />
-            <Route
-              path="/auth"
-              element={
-                <PublicRoute>
-                  <AuthPage />
-                </PublicRoute>
-              }
-            />
-
-            {/* Protected Routes */}
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <DashboardRedirect />
-                </ProtectedRoute>
-              }
-            />
-            
-            <Route
-              path="/teacher/dashboard"
-              element={
-                <ProtectedRoute requiredRole="TEACHER">
-                  <TeacherDashboard />
-                </ProtectedRoute>
-              }
-            />
-            
-            <Route
-              path="/student/dashboard"
-              element={
-                <ProtectedRoute requiredRole="STUDENT">
-                  <StudentDashboard />
-                </ProtectedRoute>
-              }
-            />
-
-            <Route
-              path="/quiz/create"
-              element={
-                <ProtectedRoute requiredRole="TEACHER">
-                  <QuizCreate />
-                </ProtectedRoute>
-              }
-            />
-
-            <Route
-              path="/quiz/ai-generate"
-              element={
-                <ProtectedRoute requiredRole="TEACHER">
-                  <QuizAiGenerate />
-                </ProtectedRoute>
-              }
-            />
-
-            <Route
-              path="/quiz/:quizId/attempt"
-              element={
-                <ProtectedRoute requiredRole="STUDENT">
-                  <QuizAttempt />
-                </ProtectedRoute>
-              }
-            />
-
-            <Route
-              path="/quiz/:quizId/results"
-              element={
-                <ProtectedRoute>
-                  <QuizResults />
-                </ProtectedRoute>
-              }
-            />
-
-            <Route
-              path="/analytics"
-              element={
-                <ProtectedRoute requiredRole="TEACHER">
-                  <Analytics />
-                </ProtectedRoute>
-              }
-            />
-
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute>
-                  <Profile />
-                </ProtectedRoute>
-              }
-            />
-
-            {/* 404 Route */}
-            <Route path="/404" element={<NotFound />} />
-            <Route path="*" element={<Navigate to="/404" replace />} />
-          </Routes>
-        </div>
-      </Router>
-    </AuthProvider>
-  );
-}
-
 // Component to redirect to appropriate dashboard based on user role
 const DashboardRedirect = () => {
-  const user = JSON.parse(localStorage.getItem('user'));
+  const { user } = useAuth();
   
   if (user?.role === 'TEACHER') {
     return <Navigate to="/teacher/dashboard" replace />;
@@ -166,5 +33,139 @@ const DashboardRedirect = () => {
   
   return <Navigate to="/" replace />;
 };
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <LandingPage />,
+  },
+  {
+    path: "/auth",
+    element: (
+      <PublicRoute>
+        <AuthPage />
+      </PublicRoute>
+    ),
+  },
+  {
+    path: "/dashboard",
+    element: (
+      <ProtectedRoute>
+        <DashboardRedirect />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/teacher/dashboard",
+    element: (
+      <ProtectedRoute requiredRole="TEACHER">
+        <TeacherDashboard />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/student/dashboard",
+    element: (
+      <ProtectedRoute requiredRole="STUDENT">
+        <StudentDashboard />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/quiz/create",
+    element: (
+      <ProtectedRoute requiredRole="TEACHER">
+        <QuizCreate />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/quiz/ai-generate",
+    element: (
+      <ProtectedRoute requiredRole="TEACHER">
+        <QuizAiGenerate />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/quiz/:quizId/attempt",
+    element: (
+      <ProtectedRoute requiredRole="STUDENT">
+        <QuizAttempt />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/quiz/:quizId/results",
+    element: (
+      <ProtectedRoute>
+        <QuizResults />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/analytics",
+    element: (
+      <ProtectedRoute requiredRole="TEACHER">
+        <Analytics />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/profile",
+    element: (
+      <ProtectedRoute>
+        <Profile />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/404",
+    element: <NotFound />,
+  },
+  {
+    path: "*",
+    element: <Navigate to="/404" replace />,
+  },
+], {
+  future: {
+    v7_startTransition: true,
+    v7_relativeSplatPath: true,
+  },
+});
+
+function App() {
+  return (
+    <AuthProvider>
+      <div className="App">
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            duration: 4000,
+            style: {
+              border: '3px solid #000',
+              boxShadow: '4px 4px 0px #000',
+              fontWeight: 'bold',
+            },
+            success: {
+              style: {
+                background: '#00F5A0',
+                color: '#000',
+              },
+            },
+            error: {
+              style: {
+                background: '#FF5E5B',
+                color: '#fff',
+              },
+            },
+          }}
+        />
+        
+        <RouterProvider router={router} />
+      </div>
+    </AuthProvider>
+  );
+}
 
 export default App;
