@@ -1,0 +1,10 @@
+C:\Users\deepa\OneDrive\Desktop\quiz-apc\backend\result-service\src\main\java\com\app\resultservice\controller\ResultController.java
+C:\Users\deepa\OneDrive\Desktop\quiz-apc\backend\result-service\src\main\java\com\app\resultservice\dto\QuizAttemptRequest.java
+C:\Users\deepa\OneDrive\Desktop\quiz-apc\backend\result-service\src\main\java\com\app\resultservice\dto\QuizResultResponse.java
+C:\Users\deepa\OneDrive\Desktop\quiz-apc\backend\result-service\src\main\java\com\app\resultservice\entity\QuestionResult.java
+C:\Users\deepa\OneDrive\Desktop\quiz-apc\backend\result-service\src\main\java\com\app\resultservice\entity\QuizResult.java
+C:\Users\deepa\OneDrive\Desktop\quiz-apc\backend\result-service\src\main\java\com\app\resultservice\repository\QuestionResultRepository.java
+C:\Users\deepa\OneDrive\Desktop\quiz-apc\backend\result-service\src\main\java\com\app\resultservice\repository\QuizResultRepository.java
+C:\Users\deepa\OneDrive\Desktop\quiz-apc\backend\result-service\src\main\java\com\app\resultservice\ResultServiceApplication.java
+C:\Users\deepa\OneDrive\Desktop\quiz-apc\backend\result-service\src\main\java\com\app\resultservice\service\QuestionBankClient.java
+C:\Users\deepa\OneDrive\Desktop\quiz-apc\backend\result-service\src\main\java\com\app\resultservice\service\QuizResultService.java
