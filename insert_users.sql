@@ -1,0 +1,3 @@
+INSERT INTO users (username, email, password, first_name, last_name, role, is_active, is_verified, created_at, updated_at) VALUES 
+('teacher', 'teacher@example.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Teacher', 'User', 'TEACHER', 1, 1, NOW(), NOW()),
+('student', 'student@example.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Student', 'User', 'STUDENT', 1, 1, NOW(), NOW());

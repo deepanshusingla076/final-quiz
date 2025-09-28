@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-const QuizCard = ({ quiz, onDelete, showActions = false, showTakeQuiz = false }) => {
+const QuizCard = ({ quiz, onDelete, showActions = false, showTakeQuiz = false, hasAttempted = false, attemptedResult = null }) => {
   const getDifficultyColor = (difficulty) => {
     switch (difficulty?.toLowerCase()) {
       case 'easy': return 'success';
@@ -75,9 +75,9 @@ const QuizCard = ({ quiz, onDelete, showActions = false, showTakeQuiz = false })
       </div>
 
       <div className="quiz-card-footer">
-        {showTakeQuiz && (
+        {showTakeQuiz && !hasAttempted && (
           <motion.a
-            href={`/quiz/attempt/${quiz.id}`}
+            href={`/quiz/${quiz.id}/attempt`}
             className="btn btn-primary btn-full"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -85,6 +85,37 @@ const QuizCard = ({ quiz, onDelete, showActions = false, showTakeQuiz = false })
             <i className="fas fa-play"></i>
             Take Quiz
           </motion.a>
+        )}
+
+        {showTakeQuiz && hasAttempted && attemptedResult && (
+          <div className="attempted-info">
+            <div className="attempted-badge">
+              <i className="fas fa-check-circle"></i>
+              Completed
+            </div>
+            <div className="result-summary">
+              Score: {attemptedResult.score}% ({attemptedResult.correctAnswers}/{attemptedResult.totalQuestions})
+            </div>
+            <motion.a
+              href={`/quiz/${quiz.id}/results/${attemptedResult.id}`}
+              className="btn btn-info btn-small"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <i className="fas fa-eye"></i>
+              View Results
+            </motion.a>
+          </div>
+        )}
+
+        {showTakeQuiz && hasAttempted && !attemptedResult && (
+          <div className="attempted-info">
+            <div className="attempted-badge completed">
+              <i className="fas fa-check-circle"></i>
+              Already Attempted
+            </div>
+            <p className="attempt-note">You have already taken this quiz.</p>
+          </div>
         )}
 
         {showActions && (

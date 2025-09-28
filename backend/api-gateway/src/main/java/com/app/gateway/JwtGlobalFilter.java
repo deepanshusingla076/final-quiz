@@ -30,8 +30,17 @@ public class JwtGlobalFilter implements GlobalFilter, Ordered {
 
         log.debug("Processing request: {} {}", request.getMethod(), path);
 
+        // Always allow CORS preflight requests
+        if ("OPTIONS".equalsIgnoreCase(String.valueOf(request.getMethod()))) {
+            log.debug("Allowing CORS preflight without JWT validation for path: {}", path);
+            return chain.filter(exchange);
+        }
+
         // Skip JWT validation for auth endpoints and actuator endpoints
-        if (path.contains("/api/auth/") || path.startsWith("/actuator/")) {
+        if (path.contains("/api/auth/")
+                || path.startsWith("/actuator/")
+                || path.startsWith("/swagger-ui/")
+                || path.startsWith("/v3/api-docs")) {
             log.debug("Skipping JWT validation for path: {}", path);
             return chain.filter(exchange);
         }

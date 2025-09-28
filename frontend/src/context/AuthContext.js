@@ -15,7 +15,6 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
@@ -33,8 +32,6 @@ export const AuthProvider = ({ children }) => {
       } catch (error) {
         console.error('Error initializing auth:', error);
         logout();
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -43,7 +40,6 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     try {
-      setLoading(true);
       const response = await authService.login(credentials);
       
       const { token: newToken, user: userData } = response;
@@ -59,37 +55,35 @@ export const AuthProvider = ({ children }) => {
       toast.success(`Welcome back, ${userData.firstName}!`);
       return response;
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Login failed';
+      console.error('Login error:', error);
+      const errorMessage = error.message || 'Login failed. Please check your credentials and try again.';
       toast.error(errorMessage);
       throw error;
-    } finally {
-      setLoading(false);
     }
   };
 
   const register = async (userData) => {
     try {
-      setLoading(true);
       const response = await authService.register(userData);
-      
       const { token: newToken, user: newUser } = response;
-      
       setToken(newToken);
       setUser(newUser);
       setIsAuthenticated(true);
-      
       localStorage.setItem('token', newToken);
       localStorage.setItem('user', JSON.stringify(newUser));
       authService.setAuthToken(newToken);
-      
       toast.success(`Welcome to QWIZZ, ${newUser.firstName}!`);
       return response;
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Registration failed';
+      console.error('Registration error:', error);
+      // Show backend error message if available
+      let errorMessage = error.message || 'Registration failed. Please try again.';
+      // If error.message is a generic message, try to parse backend validation errors
+      if (error.response && error.response.data && error.response.data.message) {
+        errorMessage = error.response.data.message;
+      }
       toast.error(errorMessage);
       throw error;
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -117,7 +111,6 @@ export const AuthProvider = ({ children }) => {
   const value = {
     user,
     token,
-    loading,
     isAuthenticated,
     login,
     register,

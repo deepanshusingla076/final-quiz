@@ -4,4 +4,3 @@ com\app\gateway\CorsConfig.class
 com\app\gateway\JwtUtil.class
 com\app\gateway\JwtGatewayFilterFactory.class
 com\app\gateway\JwtGlobalFilter.class
-com\app\gateway\config\SecurityConfig.class

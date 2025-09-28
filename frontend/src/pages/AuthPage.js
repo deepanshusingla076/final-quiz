@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 
@@ -16,9 +16,16 @@ const AuthPage = () => {
   });
   const [passwordStrength, setPasswordStrength] = useState('');
   const [passwordMatch, setPasswordMatch] = useState(true);
-  const [loading, setLoading] = useState(false);
 
-  const { login, register } = useAuth();
+  const { login, register, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   // Password strength checker
   useEffect(() => {
@@ -52,18 +59,54 @@ const AuthPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
 
     try {
       if (isLogin) {
         // Login
-        await login({
+        const response = await login({
           usernameOrEmail: formData.username,
           password: formData.password
         });
-        // navigate('/dashboard'); // Remove navigation, let context handle it
+        if (response) {
+          navigate('/dashboard', { replace: true });
+        }
       } else {
-        // Register
+        // --- Frontend validation for registration fields ---
+        // Username: 3-50 chars, letters/numbers/underscores
+        if (!/^\w{3,50}$/.test(formData.username)) {
+          toast.error('Username must be 3-50 characters and contain only letters, numbers, and underscores.');
+          return;
+        }
+        // Email: valid, <=100 chars
+        if (!/^.{1,100}$/.test(formData.email) || !/^\S+@\S+\.\S+$/.test(formData.email)) {
+          toast.error('Please enter a valid email address (max 100 characters).');
+          return;
+        }
+        // Password: 8-100 chars, at least 1 lowercase, 1 uppercase, 1 digit, 1 special char
+        if (!/^.{8,100}$/.test(formData.password) ||
+            !/(?=.*[a-z])/.test(formData.password) ||
+            !/(?=.*[A-Z])/.test(formData.password) ||
+            !/(?=.*\d)/.test(formData.password) ||
+            !/(?=.*[@$!%*?&])/.test(formData.password)) {
+          toast.error('Password must be 8-100 characters and include lowercase, uppercase, digit, and special character.');
+          return;
+        }
+        // First name: not blank, <=50 chars
+        if (!formData.firstName.trim() || formData.firstName.length > 50) {
+          toast.error('First name is required and must not exceed 50 characters.');
+          return;
+        }
+        // Last name: not blank, <=50 chars
+        if (!formData.lastName.trim() || formData.lastName.length > 50) {
+          toast.error('Last name is required and must not exceed 50 characters.');
+          return;
+        }
+        // Role: STUDENT or TEACHER
+        if (!['STUDENT', 'TEACHER'].includes(formData.role)) {
+          toast.error('Role must be either Student or Teacher.');
+          return;
+        }
+        // Password match
         if (!passwordMatch) {
           toast.error('Passwords do not match!');
           return;
@@ -73,7 +116,7 @@ const AuthPage = () => {
           return;
         }
 
-        await register({
+        const response = await register({
           username: formData.username,
           email: formData.email,
           password: formData.password,
@@ -81,12 +124,13 @@ const AuthPage = () => {
           lastName: formData.lastName,
           role: formData.role
         });
-        // navigate('/dashboard'); // Remove navigation, let context handle it
+        if (response) {
+          navigate('/dashboard', { replace: true });
+        }
       }
     } catch (error) {
       console.error('Auth error:', error);
-    } finally {
-      setLoading(false);
+      toast.error(error.message || 'Authentication failed. Please try again.');
     }
   };
 
@@ -267,20 +311,11 @@ const AuthPage = () => {
 
             <button
               type="submit"
-              disabled={loading || (!isLogin && !passwordMatch)}
+              disabled={!isLogin && !passwordMatch}
               className="auth-submit-btn"
             >
-              {loading ? (
-                <>
-                  <div className="spinner small"></div>
-                  {isLogin ? 'Signing In...' : 'Creating...'}
-                </>
-              ) : (
-                <>
-                  <i className={`fas fa-${isLogin ? 'sign-in-alt' : 'user-plus'}`}></i>
-                  {isLogin ? 'Sign In' : 'Create Account'}
-                </>
-              )}
+              <i className={`fas fa-${isLogin ? 'sign-in-alt' : 'user-plus'}`}></i>
+              {isLogin ? 'Sign In' : 'Create Account'}
             </button>
 
             <div className="auth-footer">

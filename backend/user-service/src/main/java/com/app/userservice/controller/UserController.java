@@ -27,7 +27,7 @@ public class UserController {
             UserResponse user = userService.getUserById(userId);
             return ResponseEntity.ok(user);
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         }
     }
     
@@ -38,7 +38,7 @@ public class UserController {
             UserResponse user = userService.getUserByUsername(username);
             return ResponseEntity.ok(user);
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         }
     }
     
@@ -76,7 +76,7 @@ public class UserController {
             UserResponse user = userService.updateUser(userId, updatedUser);
             return ResponseEntity.ok(user);
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         }
     }
     
@@ -125,7 +125,7 @@ public class UserController {
             UserResponse user = userService.validateTokenAndGetUser(jwtToken);
             return ResponseEntity.ok(user);
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 }

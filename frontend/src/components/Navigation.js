@@ -44,6 +44,7 @@ const Navigation = ({ activeSection, onNavigate }) => {
                   </Link>
                 </>
               )}
+
               <div className="nav-dropdown">
                 <button className="nav-link dropdown-trigger">
                   <i className="fas fa-user"></i>

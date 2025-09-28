@@ -138,33 +138,33 @@ function App() {
   return (
     <AuthProvider>
       <div className="App">
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            duration: 4000,
-            style: {
-              border: '3px solid #000',
-              boxShadow: '4px 4px 0px #000',
-              fontWeight: 'bold',
-            },
-            success: {
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 4000,
               style: {
-                background: '#00F5A0',
-                color: '#000',
+                border: '3px solid #000',
+                boxShadow: '4px 4px 0px #000',
+                fontWeight: 'bold',
               },
-            },
-            error: {
-              style: {
-                background: '#FF5E5B',
-                color: '#fff',
+              success: {
+                style: {
+                  background: '#00F5A0',
+                  color: '#000',
+                },
               },
-            },
-          }}
-        />
-        
-        <RouterProvider router={router} />
-      </div>
-    </AuthProvider>
+              error: {
+                style: {
+                  background: '#FF5E5B',
+                  color: '#fff',
+                },
+              },
+            }}
+          />
+          
+          <RouterProvider router={router} />
+        </div>
+      </AuthProvider>
   );
 }
 

@@ -1,0 +1,45 @@
+package com.app.gateway.config;
+
+import org.springframework.cloud.gateway.route.RouteLocator;
+import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+
+@Configuration
+public class GatewayConfig {
+
+    @Bean
+    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+        return builder.routes()
+                // User Service - Authentication routes (no JWT filter needed)
+                .route("user-service-auth", r -> r.path("/api/auth/**")
+                        .uri("lb://user-service"))
+
+                // User Service - Protected routes
+                .route("user-service-protected", r -> r.path("/api/users/**")
+                        .uri("lb://user-service"))
+
+                // Question Bank Service - Quiz routes
+                .route("question-bank-service-quizzes", r -> r.path("/api/quizzes/**")
+                        .uri("lb://question-bank-service"))
+
+                // Question Bank Service - Question routes  
+                .route("question-bank-service-questions", r -> r.path("/api/questions/**")
+                        .uri("lb://question-bank-service"))
+
+                // Result Service routes
+                .route("result-service", r -> r.path("/api/results/**")
+                        .uri("lb://result-service"))
+
+                // Analytics Service - Analytics routes
+                .route("analytics-service-analytics", r -> r.path("/api/analytics/**")
+                        .uri("lb://analytics-service"))
+
+                // Analytics Service - Reports routes
+                .route("analytics-service-reports", r -> r.path("/api/reports/**")
+                        .uri("lb://analytics-service"))
+
+                .build();
+    }
+}

@@ -1,6 +1,14 @@
 import { fetchAPI } from './authService';
 
 const resultService = {
+  // Submit quiz attempt (alias for submitQuizAttempt)
+  submitResult: async (resultData) => {
+    return await fetchAPI('/results/submit', {
+      method: 'POST',
+      body: JSON.stringify(resultData),
+    });
+  },
+
   // Submit quiz attempt
   submitQuizAttempt: async (attemptData) => {
     return await fetchAPI('/results/submit', {
