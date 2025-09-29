@@ -5,12 +5,23 @@ const testAuth = {
     console.log('Using mock login for:', credentials.usernameOrEmail);
     
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 300));
     
-    // Mock users for testing
+    // Basic validation
+    if (!credentials.usernameOrEmail || !credentials.password) {
+      throw new Error('Please enter both username and password.');
+    }
+    
+    if (credentials.password.length < 1) {
+      throw new Error('Password cannot be empty.');
+    }
+    
+    // For any valid input, create or use existing user
+    const username = credentials.usernameOrEmail.toLowerCase().split('@')[0]; // Extract username from email if provided
+    
     const mockUsers = {
       'teacher': {
-        id: 1,
+        id: 1759133954141, // Use consistent ID that matches the error
         username: 'teacher',
         email: 'teacher@example.com',
         firstName: 'Teacher',
@@ -18,7 +29,7 @@ const testAuth = {
         role: 'TEACHER'
       },
       'student': {
-        id: 2,
+        id: 1759133954142,
         username: 'student',
         email: 'student@example.com',
         firstName: 'Student',
@@ -26,7 +37,7 @@ const testAuth = {
         role: 'STUDENT'
       },
       'admin': {
-        id: 3,
+        id: 1759133954143,
         username: 'admin',
         email: 'admin@example.com',
         firstName: 'Admin',
@@ -35,21 +46,28 @@ const testAuth = {
       }
     };
     
-    // Check if user exists by username or email
-    const user = mockUsers[credentials.usernameOrEmail.toLowerCase()] || 
-                 Object.values(mockUsers).find(u => u.email === credentials.usernameOrEmail.toLowerCase());
+    // Check if user exists in mock users
+    let user = mockUsers[credentials.usernameOrEmail.toLowerCase()] || 
+               Object.values(mockUsers).find(u => u.email === credentials.usernameOrEmail.toLowerCase());
     
-    // For demo purposes, accept any password that's not empty
-    if (user && credentials.password && credentials.password.length > 0) {
-      console.log('Mock login successful for user:', user.username);
-      return {
-        token: 'mock-jwt-token-' + Date.now(),
-        user: user
+    // If not found, create a new user based on the input
+    if (!user) {
+      const isEmail = credentials.usernameOrEmail.includes('@');
+      user = {
+        id: Date.now(),
+        username: isEmail ? username : credentials.usernameOrEmail,
+        email: isEmail ? credentials.usernameOrEmail : `${credentials.usernameOrEmail}@example.com`,
+        firstName: credentials.usernameOrEmail.charAt(0).toUpperCase() + credentials.usernameOrEmail.slice(1),
+        lastName: 'User',
+        role: 'STUDENT' // Default role for new users
       };
-    } else {
-      console.log('Mock login failed - user not found or empty password');
-      throw new Error('Invalid credentials. Try: teacher/student/admin with any non-empty password');
     }
+    
+    console.log('Mock login successful for user:', user.username);
+    return {
+      token: 'mock-jwt-token-' + Date.now(),
+      user: user
+    };
   },
   
   // Mock register for testing
@@ -57,11 +75,15 @@ const testAuth = {
     console.log('Using mock register for:', userData.username);
     
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 300));
     
     // Simple validation
     if (!userData.username || !userData.email || !userData.password) {
-      throw new Error('Missing required fields');
+      throw new Error('All fields are required.');
+    }
+    
+    if (!userData.firstName || !userData.lastName) {
+      throw new Error('First name and last name are required.');
     }
     
     const newUser = {
@@ -70,7 +92,7 @@ const testAuth = {
       email: userData.email,
       firstName: userData.firstName,
       lastName: userData.lastName,
-      role: userData.role
+      role: userData.role || 'STUDENT'
     };
     
     console.log('Mock registration successful for user:', newUser.username);

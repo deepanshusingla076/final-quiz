@@ -168,7 +168,6 @@ const QuizCreate = () => {
             <i className="fas fa-plus-circle"></i>
             Create New Quiz
           </h1>
-          <p>Build an engaging quiz for your students</p>
         </motion.div>
 
         <motion.div className="quiz-form-container" variants={itemVariants}>

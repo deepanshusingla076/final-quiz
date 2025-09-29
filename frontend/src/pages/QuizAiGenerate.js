@@ -60,13 +60,37 @@ const QuizAiGenerate = () => {
       setLoading(true);
       setStep(2);
 
-      // Simulate AI generation process (replace with actual AI service call)
-      await simulateAiGeneration();
+      // Call the actual backend AI service
+      const aiGenerationRequest = {
+        topic: generationParams.topic,
+        difficulty: generationParams.difficulty,
+        questionCount: generationParams.questionCount,
+        timeLimit: generationParams.timeLimit,
+        questionType: generationParams.questionTypes[0], // Use first selected type
+        description: generationParams.description,
+        createdBy: user.id
+      };
+
+      toast.loading('AI is generating your quiz...', { duration: 3000 });
+      const generatedQuiz = await quizService.generateAiQuiz(aiGenerationRequest);
+      
+      setGeneratedQuiz(generatedQuiz);
+      setStep(3);
+      toast.success('Quiz generated successfully!');
       
     } catch (error) {
       console.error('Error generating quiz:', error);
       toast.error('Failed to generate quiz. Please try again.');
-      setStep(1);
+      
+      // Fallback to mock generation if backend fails
+      toast.loading('Using offline mode...', { duration: 2000 });
+      try {
+        await simulateAiGeneration();
+      } catch (fallbackError) {
+        console.error('Fallback generation also failed:', fallbackError);
+        toast.error('Quiz generation failed completely. Please check your connection.');
+        setStep(1);
+      }
     } finally {
       setLoading(false);
     }
@@ -267,7 +291,6 @@ const QuizAiGenerate = () => {
             <i className="fas fa-robot"></i>
             AI Quiz Generator
           </h1>
-          <p>Generate quizzes instantly using artificial intelligence</p>
         </motion.div>
 
         {/* Step 1: Setup */}

@@ -40,6 +40,19 @@ public class GatewayConfig {
                 .route("analytics-service-reports", r -> r.path("/api/reports/**")
                         .uri("lb://analytics-service"))
 
+                // Health check routes for all services
+                .route("user-service-health", r -> r.path("/actuator/health/user-service")
+                        .uri("lb://user-service"))
+                
+                .route("question-bank-service-health", r -> r.path("/actuator/health/question-bank-service")
+                        .uri("lb://question-bank-service"))
+                
+                .route("result-service-health", r -> r.path("/actuator/health/result-service")
+                        .uri("lb://result-service"))
+                
+                .route("analytics-service-health", r -> r.path("/actuator/health/analytics-service")
+                        .uri("lb://analytics-service"))
+
                 .build();
     }
 }

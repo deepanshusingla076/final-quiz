@@ -16,6 +16,7 @@ const AuthPage = () => {
   });
   const [passwordStrength, setPasswordStrength] = useState('');
   const [passwordMatch, setPasswordMatch] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { login, register, isAuthenticated } = useAuth();
   const navigate = useNavigate();
@@ -59,6 +60,7 @@ const AuthPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     try {
       if (isLogin) {
@@ -75,11 +77,13 @@ const AuthPage = () => {
         // Username: 3-50 chars, letters/numbers/underscores
         if (!/^\w{3,50}$/.test(formData.username)) {
           toast.error('Username must be 3-50 characters and contain only letters, numbers, and underscores.');
+          setIsSubmitting(false);
           return;
         }
         // Email: valid, <=100 chars
         if (!/^.{1,100}$/.test(formData.email) || !/^\S+@\S+\.\S+$/.test(formData.email)) {
           toast.error('Please enter a valid email address (max 100 characters).');
+          setIsSubmitting(false);
           return;
         }
         // Password: 8-100 chars, at least 1 lowercase, 1 uppercase, 1 digit, 1 special char
@@ -89,30 +93,36 @@ const AuthPage = () => {
             !/(?=.*\d)/.test(formData.password) ||
             !/(?=.*[@$!%*?&])/.test(formData.password)) {
           toast.error('Password must be 8-100 characters and include lowercase, uppercase, digit, and special character.');
+          setIsSubmitting(false);
           return;
         }
         // First name: not blank, <=50 chars
         if (!formData.firstName.trim() || formData.firstName.length > 50) {
           toast.error('First name is required and must not exceed 50 characters.');
+          setIsSubmitting(false);
           return;
         }
         // Last name: not blank, <=50 chars
         if (!formData.lastName.trim() || formData.lastName.length > 50) {
           toast.error('Last name is required and must not exceed 50 characters.');
+          setIsSubmitting(false);
           return;
         }
         // Role: STUDENT or TEACHER
         if (!['STUDENT', 'TEACHER'].includes(formData.role)) {
           toast.error('Role must be either Student or Teacher.');
+          setIsSubmitting(false);
           return;
         }
         // Password match
         if (!passwordMatch) {
           toast.error('Passwords do not match!');
+          setIsSubmitting(false);
           return;
         }
         if (passwordStrength === 'Weak') {
           toast.error('Please use a stronger password!');
+          setIsSubmitting(false);
           return;
         }
 
@@ -131,6 +141,8 @@ const AuthPage = () => {
     } catch (error) {
       console.error('Auth error:', error);
       toast.error(error.message || 'Authentication failed. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -311,11 +323,20 @@ const AuthPage = () => {
 
             <button
               type="submit"
-              disabled={!isLogin && !passwordMatch}
-              className="auth-submit-btn"
+              disabled={isSubmitting || (!isLogin && !passwordMatch)}
+              className={`auth-submit-btn ${isSubmitting ? 'submitting' : ''}`}
             >
-              <i className={`fas fa-${isLogin ? 'sign-in-alt' : 'user-plus'}`}></i>
-              {isLogin ? 'Sign In' : 'Create Account'}
+              {isSubmitting ? (
+                <>
+                  <div className="spinner"></div>
+                  {isLogin ? 'Signing In...' : 'Creating Account...'}
+                </>
+              ) : (
+                <>
+                  <i className={`fas fa-${isLogin ? 'sign-in-alt' : 'user-plus'}`}></i>
+                  {isLogin ? 'Sign In' : 'Create Account'}
+                </>
+              )}
             </button>
 
             <div className="auth-footer">

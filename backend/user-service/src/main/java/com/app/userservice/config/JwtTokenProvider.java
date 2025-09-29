@@ -23,7 +23,7 @@ public class JwtTokenProvider {
     @Value("${jwt.refreshExpirationMs:86400000}")
     private long jwtRefreshExpirationMs;
 
-    public JwtTokenProvider(@Value("${jwt.secret:Deepanshu@123ds}") String jwtSecret) {
+    public JwtTokenProvider(@Value("${jwt.secret:2b7e151628aed2a6abf7158809cf4f3c2b7e151628aed2a6abf7158809cf4f3c2b7e151628aed2a6abf7158809cf4f3c}") String jwtSecret) {
         this.secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes());
     }
 

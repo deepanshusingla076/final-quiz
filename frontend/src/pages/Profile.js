@@ -79,7 +79,6 @@ const Profile = () => {
             <i className="fas fa-user-cog"></i>
             Profile Settings
           </h1>
-          <p>Manage your account information and preferences</p>
         </motion.div>
 
         <motion.div className="profile-container" variants={itemVariants}>

@@ -1,377 +1,265 @@
-# QWIZZ - Interactive Quiz Platform
+# QWIZZ - Advanced Quiz Application Platform
 
-QWIZZ is a modern, scalable online quiz platform built with a microservices architecture. It features AI-powered quiz generation, robust authentication, analytics, and a beautiful neo-brutalist UI. The platform supports role-based access for teachers and students, enabling seamless quiz creation, taking, and performance tracking.
+A comprehensive microservices-based quiz application with AI-powered question generation, built with Spring Boot backend and React frontend.
 
----
+## 🚀 Features
 
-## 🏗️ System Architecture
+### Core Functionality
+- **User Management**: Teacher and Student roles with JWT authentication
+- **Quiz Creation**: Manual quiz creation with multiple question types
+- **AI Quiz Generation**: Generate quizzes using Google Gemini AI
+- **Quiz Taking**: Timed quiz attempts with instant results
+- **Analytics Dashboard**: Performance tracking and statistics
+- **Result Management**: Comprehensive result tracking and scoring
 
+### Technical Features
+- **Microservices Architecture**: Scalable backend with Spring Boot
+- **Service Discovery**: Eureka server for service registration
+- **API Gateway**: Centralized routing and JWT validation
+- **Real-time UI**: React with modern animations and responsive design
+- **Database**: MySQL with JPA/Hibernate
+- **Security**: JWT-based authentication across all services
+
+## 🏗️ Architecture
+
+### Backend Services
+- **Eureka Server** (Port 8761): Service discovery and registration
+- **API Gateway** (Port 8080): Routing, authentication, and CORS handling
+- **Question Bank Service** (Port 8081): Quiz and question management with AI integration
+- **Result Service** (Port 8082): Quiz attempts and result processing
+- **User Service** (Port 8083): User authentication and management
+- **Analytics Service** (Port 8084): Performance analytics and reporting
+
+### Frontend
+- **React Application** (Port 3000): Modern SPA with responsive design
+
+## 📋 Prerequisites
+
+### Software Requirements
+- **Java 21** or higher
+- **Node.js 16** or higher
+- **MySQL 8.0** or higher
+- **Maven 3.6** or higher (or Maven Wrapper included)
+
+### Environment Setup
+1. **Database Setup**: Create a MySQL database named `quiz_apc`
+2. **Gemini AI API**: Obtain Google Gemini AI API key for quiz generation
+
+### Environment Variables (Optional)
+```bash
+# Database Configuration
+DB_URL=jdbc:mysql://localhost:3306/quiz_apc
+DB_USERNAME=root
+DB_PASSWORD=your_password
+
+# JWT Security
+JWT_SECRET=your_jwt_secret_key_here
+
+# AI Configuration
+GEMINI_API_KEY=your_gemini_api_key_here
 ```
-┌───────────────┐    ┌───────────────┐    ┌───────────────┐
-│   React App   │    │ API Gateway   │    │ Eureka Server │
-│   (3000)      │────│   (8080)      │────│   (8761)      │
-└───────────────┘    └───────────────┘    └───────────────┘
-        │                   │                   │
-        ▼                   ▼                   ▼
-┌───────────────┐ ┌───────────────┐ ┌───────────────┐ ┌───────────────┐
-│ User Service  │ │ Question Bank │ │ Result Svc    │ │ Analytics Svc │
-│   (8083)      │ │   (8081)      │ │   (8082)      │ │   (8084)      │
-└───────────────┘ └───────────────┘ └───────────────┘ └───────────────┘
-                        │
-                        ▼
-                  ┌───────────────┐
-                  │   MySQL DB    │
-                  └───────────────┘
-```
-
-### How It Works
-- **Frontend (React)**: Single-page application handling user interactions, routing, and UI rendering.
-- **API Gateway**: Central entry point for all client requests, handling authentication, CORS, load balancing, and routing to appropriate microservices.
-- **Eureka Server**: Service discovery mechanism allowing microservices to register and discover each other dynamically.
-- **Microservices**: Independent services communicating via REST APIs, each handling specific business logic.
-- **Database**: Shared MySQL database for data persistence across services.
-
----
-
-## 📦 Microservices Overview
-
-### 1. API Gateway (Port 8080)
-**Functionality**:
-- Acts as a single entry point for all client requests.
-- Handles JWT authentication and authorization.
-- Manages CORS (Cross-Origin Resource Sharing) for frontend-backend communication.
-- Routes requests to appropriate microservices based on URL paths.
-- Provides load balancing and circuit breaker patterns.
-
-**How It Works**:
-- Intercepts all `/api/*` requests from the frontend.
-- Validates JWT tokens and user roles.
-- Forwards authenticated requests to the correct service (e.g., `/api/users/*` → User Service).
-- Returns unified responses to the client.
-
-### 2. Eureka Server (Port 8761)
-**Functionality**:
-- Service registry and discovery.
-- Allows microservices to register themselves and discover other services.
-
-**How It Works**:
-- Each microservice registers with Eureka on startup.
-- Services query Eureka to find endpoints of other services.
-- Enables dynamic scaling and fault tolerance.
-
-### 3. User Service (Port 8083)
-**Functionality**:
-- User registration, login, and profile management.
-- JWT token generation and validation.
-- Role-based access control (Teacher, Student, Admin).
-- Password hashing with BCrypt.
-
-**How It Works**:
-- Handles `/api/users/*` endpoints.
-- Stores user data in MySQL (`users` table).
-- Generates JWT tokens on login for session management.
-- Validates user roles for protected routes.
-
-### 4. Question Bank Service (Port 8081)
-**Functionality**:
-- Quiz and question CRUD operations.
-- AI-powered quiz generation using Google Gemini API.
-- Question types: Multiple choice, True/False.
-- Topic-based quiz creation.
-
-**How It Works**:
-- Manages `/api/quizzes/*` and `/api/questions/*` endpoints.
-- Integrates with Gemini AI for generating questions based on topic, difficulty, and count.
-- Stores quizzes and questions in MySQL (`quizzes`, `questions` tables).
-- Supports manual quiz creation by teachers.
-
-### 5. Result Service (Port 8082)
-**Functionality**:
-- Quiz attempt submission and scoring.
-- Result storage and retrieval.
-- Leaderboards and performance tracking.
-
-**How It Works**:
-- Handles `/api/results/*` endpoints.
-- Calculates scores based on correct answers.
-- Stores attempt data in MySQL (`quiz_attempts`, `results` tables).
-- Provides detailed feedback and statistics.
-
-### 6. Analytics Service (Port 8084)
-**Functionality**:
-- Performance analytics for teachers and students.
-- Quiz statistics, success rates, and trends.
-- User progress tracking and reports.
-
-**How It Works**:
-- Processes data from Result Service.
-- Generates charts and metrics using aggregated data.
-- Provides `/api/analytics/*` endpoints for dashboards.
-
----
-
-## 🎨 Frontend (React Application)
-
-**Technology Stack**:
-- React 18.2.0 with hooks and functional components.
-- React Router v6 for client-side routing.
-- TailwindCSS for styling with neo-brutalist design.
-- Axios for API calls.
-- Framer Motion for animations.
-- React Hot Toast for notifications.
-- React Hook Form for form validation.
-- Heroicons for SVG icons.
-- Context API for state management.
-
-### Key Features
-- **Responsive Design**: Works on desktop, tablet, and mobile.
-- **Role-Based UI**: Different dashboards for teachers and students.
-- **Real-Time Feedback**: Toast notifications for actions.
-- **Form Handling**: React Hook Form for validation.
-- **State Management**: Context API for authentication state.
-
-### How It Works
-- **Routing**: Uses `createBrowserRouter` for declarative routing with protected routes.
-- **Authentication**: Stores JWT in localStorage, validates on each request.
-- **API Integration**: All requests go through API Gateway with auth headers.
-- **Components**: Modular components for reusability (e.g., ProtectedRoute, PublicRoute, LoadingSpinner, Navigation, DashboardLayout, QuizCard).
-- **Pages**:
-  - **LandingPage**: Public homepage with hero section and features overview.
-  - **AuthPage**: Login/register forms with validation.
-  - **TeacherDashboard**: Quiz management, student analytics, and performance metrics.
-  - **StudentDashboard**: Available quizzes, recent results, and progress tracking.
-  - **QuizCreate**: Manual quiz creation with question builder.
-  - **QuizAiGenerate**: AI-powered quiz generation with topic selection.
-  - **QuizAttempt**: Interactive quiz taking with timer and progress bar.
-  - **QuizResults**: Detailed results with explanations and scores.
-  - **Profile**: User profile management and settings.
-  - **Analytics**: Teacher analytics with charts and reports.
-  - **NotFound**: 404 error page.
-
----
-
-## 🔐 Authentication & Security
-
-- **JWT-Based Auth**: Stateless tokens with expiration.
-- **Role-Based Access**: Teacher/Student/Admin roles.
-- **Protected Routes**: Frontend checks roles before rendering.
-- **API Security**: Gateway validates tokens on each request.
-- **Password Security**: BCrypt hashing.
-- **CORS**: Configured in API Gateway.
-
----
-
-## 🤖 AI Integration
-
-- **Google Gemini AI**: Used for quiz generation.
-- **API Key**: Stored securely (not in code).
-- **Functionality**: Generates questions based on topic, difficulty, and count.
-- **Fallback**: Manual quiz creation if AI fails.
-
----
-
-## 🗄️ Database Schema
-
-- **MySQL 8.0**: Relational database with JSON support and improved performance.
-- **Connection**: JDBC URL with SSL disabled for local development.
-- **Tables**:
-  - `users`: User accounts, roles (TEACHER/STUDENT), profiles, timestamps.
-  - `quizzes`: Quiz metadata (title, description, settings, creator), timestamps.
-  - `questions`: Question content, options, correct answers, types (MCQ/True-False).
-  - `quiz_attempts`: User quiz sessions with start/end times.
-  - `results`: Scores, feedback, detailed answers, timestamps.
-- **Relationships**: Users create quizzes, quizzes have questions, users attempt quizzes (many-to-many via attempts).
-
----
-
-## 📡 API Endpoints
-
-All endpoints are prefixed with `/api` and routed through the API Gateway.
-
-### Authentication
-- `POST /api/users/register` - User registration
-- `POST /api/users/login` - User login (returns JWT)
-- `GET /api/users/profile` - Get user profile
-- `PUT /api/users/profile` - Update user profile
-
-### Quizzes
-- `GET /api/quizzes` - List all quizzes (filtered by user role)
-- `POST /api/quizzes` - Create new quiz
-- `GET /api/quizzes/{id}` - Get quiz details
-- `PUT /api/quizzes/{id}` - Update quiz
-- `DELETE /api/quizzes/{id}` - Delete quiz
-- `POST /api/quizzes/generate` - AI-generated quiz
-- `GET /api/quizzes/search` - Search quizzes by topic/difficulty
-
-### Questions
-- `GET /api/quizzes/{quizId}/questions` - Get quiz questions
-- `POST /api/quizzes/{quizId}/questions` - Add question to quiz
-- `PUT /api/questions/{id}` - Update question
-- `DELETE /api/questions/{id}` - Delete question
-
-### Results
-- `POST /api/results/submit` - Submit quiz attempt
-- `GET /api/results/{id}` - Get result details
-- `GET /api/results/user/{userId}` - Get user's results
-- `GET /api/results/quiz/{quizId}/stats` - Quiz statistics
-- `GET /api/results/quiz/{quizId}/leaderboard` - Quiz leaderboard
-
-### Analytics
-- `GET /api/analytics/overview` - Teacher analytics overview
-- `GET /api/analytics/students` - Student performance data
-- `GET /api/analytics/quizzes` - Quiz performance metrics
-
----
 
 ## 🚀 Quick Start
 
-1. **Prerequisites**: Java 21+, Node.js 16+, Maven 3.9+, MySQL 8.0+.
-2. **Database Setup**: Create `quiz_apc` database, update credentials in `application.properties`.
-3. **Backend**:
-   - Run Eureka Server first.
-   - Start other services in any order.
-4. **Frontend**:
-   - `npm install`
-   - `npm start`
-5. **Access**: http://localhost:3000
-
-### Demo Accounts
-- **Teacher**: username=teacher, password=Teacher@123
-- **Student**: username=student, password=Student@123
-
----
-
-## ⚙️ Configuration
-
-### Environment Variables (Frontend)
-Create a `.env` file in `frontend/` directory:
-```
-REACT_APP_API_URL=http://localhost:8080/api
-REACT_APP_GEMINI_API_KEY=your_gemini_api_key_here
+### 1. Clone and Setup
+```bash
+git clone <repository-url>
+cd quiz-apc
 ```
 
-### Application Properties (Backend)
-Update in each service's `src/main/resources/application.properties`:
+### 2. Database Setup
+```sql
+CREATE DATABASE quiz_apc;
+CREATE USER 'quiz_user'@'localhost' IDENTIFIED BY 'your_password';
+GRANT ALL PRIVILEGES ON quiz_apc.* TO 'quiz_user'@'localhost';
+FLUSH PRIVILEGES;
 ```
-# Database
-spring.datasource.url=jdbc:mysql://localhost:3306/quiz_apc?useSSL=false&serverTimezone=UTC
+
+### 3. Start Application (Windows)
+```bash
+# Run the automated startup script
+start.bat
+```
+
+### 4. Manual Startup (Alternative)
+```bash
+# Start backend services (in separate terminals)
+cd backend/eureka-server && mvn spring-boot:run
+cd backend/api-gateway && mvn spring-boot:run
+cd backend/user-service && mvn spring-boot:run
+cd backend/question-bank-service && mvn spring-boot:run
+cd backend/result-service && mvn spring-boot:run
+cd backend/analytics-service && mvn spring-boot:run
+
+# Start frontend
+cd frontend && npm install && npm start
+```
+
+## 🌐 Application URLs
+
+- **Frontend Application**: http://localhost:3000
+- **API Gateway**: http://localhost:8080
+- **Eureka Dashboard**: http://localhost:8761
+- **Backend Services**: Accessible through API Gateway
+
+## 👥 Default Users
+
+For testing purposes, the application includes mock authentication:
+
+### Teacher Account
+- **Username**: teacher or teacher@example.com
+- **Password**: password
+- **Role**: TEACHER
+
+### Student Account
+- **Username**: student or student@example.com
+- **Password**: password
+- **Role**: STUDENT
+
+### Admin Account
+- **Username**: admin or admin@example.com
+- **Password**: password
+- **Role**: ADMIN
+
+## 📊 API Endpoints
+
+### Authentication
+- `POST /api/auth/login` - User login
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/refresh` - Refresh token
+
+### Quiz Management
+- `GET /api/quizzes` - Get all quizzes
+- `POST /api/quizzes` - Create manual quiz
+- `POST /api/quizzes/generate` - Generate AI quiz
+- `GET /api/quizzes/{id}` - Get quiz by ID
+- `DELETE /api/quizzes/{id}` - Delete quiz
+
+### Results
+- `POST /api/results/submit` - Submit quiz attempt
+- `GET /api/results/user/{userId}` - Get user results
+- `GET /api/results/quiz/{quizId}/stats` - Get quiz statistics
+
+### Analytics
+- `GET /api/analytics/dashboard` - Dashboard analytics
+- `GET /api/analytics/quiz/{quizId}` - Quiz performance
+- `GET /api/analytics/user/{userId}` - User analytics
+
+## 🧪 Testing
+
+### Backend Testing
+```bash
+# Run tests for all services
+cd backend
+mvn test
+```
+
+### Frontend Testing
+```bash
+cd frontend
+npm test
+```
+
+## 🔧 Configuration
+
+### Database Configuration
+Update `application.properties` in each service:
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/quiz_apc
 spring.datasource.username=root
-spring.datasource.password=your_mysql_password
-
-# JWT
-app.jwtSecret=your_jwt_secret_key
-app.jwtExpirationMs=3600000
-
-# Eureka (for all services except eureka-server)
-eureka.client.service-url.defaultZone=http://localhost:8761/eureka/
-
-# Gemini AI (question-bank-service)
-gemini.api.key=your_gemini_api_key
-gemini.api.url=https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent
+spring.datasource.password=your_password
 ```
 
-### Service Ports
-- API Gateway: 8080
-- Eureka Server: 8761
-- User Service: 8083
-- Question Bank Service: 8081
-- Result Service: 8082
-- Analytics Service: 8084
-- Frontend: 3000
+### AI Configuration
+Update `question-bank-service/application.properties`:
+```properties
+gemini.api.key=your_api_key_here
+gemini.api.url=https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent
+```
 
----
+### JWT Configuration
+All services use the same JWT secret for consistency:
+```properties
+jwt.secret=2b7e151628aed2a6abf7158809cf4f3c2b7e151628aed2a6abf7158809cf4f3c2b7e151628aed2a6abf7158809cf4f3c
+jwt.expirationMs=3600000
+```
 
-## 🛠️ Technology Stack
+## 🐛 Troubleshooting
 
-**Backend**:
-- **Java 21 LTS**: Latest LTS version with modern features like records, text blocks, and improved performance.
-- **Spring Boot 3.3.x**: Framework for building microservices, with auto-configuration and embedded Tomcat.
-- **Spring Cloud 2023.0.x**: For microservices patterns like service discovery, gateway, and load balancing.
-- **Spring Security**: Authentication and authorization with JWT.
-- **Spring Data JPA**: ORM for database interactions with Hibernate.
-- **MySQL 8.0**: Relational database with JSON support and improved performance.
-- **JWT (JSON Web Tokens)**: Stateless authentication with configurable expiration.
-- **Maven 3.9+**: Dependency management and build tool.
-- **Netflix Eureka**: Service registry for dynamic service discovery.
-- **Spring Cloud Gateway**: API gateway for routing, filtering, and load balancing.
-- **BCrypt**: Password hashing for secure user authentication.
-- **Google Gemini AI**: For AI-powered quiz generation via REST API.
+### Common Issues
 
-**Frontend**:
-- **React 18.2.0**: UI library with concurrent features, hooks, and functional components.
-- **React Router v6**: Client-side routing with `createBrowserRouter` and future flags for v7 compatibility.
-- **TailwindCSS**: Utility-first CSS framework for rapid styling.
-- **Axios**: HTTP client for API requests with interceptors for auth.
-- **Framer Motion**: Animation library for smooth transitions and interactions.
-- **React Hot Toast**: Notification system for user feedback.
-- **React Hook Form**: Performant form handling with validation.
-- **Heroicons**: SVG icon library for consistent UI elements.
-- **Context API**: State management for authentication and user data.
-- **LocalStorage**: Client-side storage for JWT tokens and user sessions.
+1. **Port conflicts**: Ensure all ports (8080, 8081-8084, 3000, 8761) are available
+2. **Database connection**: Verify MySQL is running and credentials are correct
+3. **Service discovery**: Wait for Eureka server to fully start before starting other services
+4. **JWT tokens**: Ensure all services use the same JWT secret
+5. **CORS issues**: Frontend URL is whitelisted in all backend services
 
-**DevOps & Tools**:
-- **Maven**: Build automation, dependency resolution, and plugin management.
-- **Git**: Version control with branching and collaboration.
-- **PowerShell/Batch Scripts**: `start.bat` and `stop.bat` for orchestrating service startup/shutdown.
-- **VS Code**: Primary IDE with extensions for Java, React, and debugging.
-- **Postman**: API testing and documentation.
-- **Docker** (optional): Containerization for deployment.
+### Service Health Checks
+- Eureka Dashboard: http://localhost:8761
+- API Gateway Health: http://localhost:8080/actuator/health
+- Individual service health: http://localhost:{port}/actuator/health
 
-**External Services**:
-- **Google Gemini API**: AI model for generating quiz questions.
-- **MySQL Workbench**: Database design and management tool.
+## 📚 Development
 
----
+### Adding New Features
+1. **Backend**: Add new endpoints to appropriate microservice
+2. **Frontend**: Create new components and integrate with services
+3. **Gateway**: Update routing configuration if needed
 
-## 📂 Project Structure
-
+### Code Structure
 ```
 quiz-apc/
 ├── backend/
-│   ├── api-gateway/          # API Gateway service
-│   ├── eureka-server/        # Service discovery
-│   ├── user-service/         # Auth & users
-│   ├── question-bank-service/ # Quizzes & AI
-│   ├── result-service/       # Results & scoring
-│   └── analytics-service/    # Analytics & reports
+│   ├── eureka-server/          # Service discovery
+│   ├── api-gateway/            # API routing and security
+│   ├── user-service/           # Authentication and user management
+│   ├── question-bank-service/  # Quiz and AI generation
+│   ├── result-service/         # Quiz attempts and results
+│   └── analytics-service/      # Performance analytics
 ├── frontend/
 │   ├── src/
-│   │   ├── components/       # Reusable UI components
-│   │   ├── pages/           # Page components
-│   │   ├── services/        # API service functions
-│   │   └── context/         # React context
-│   └── public/              # Static assets
-├── start.bat                # Windows startup script
-├── stop.bat                 # Windows shutdown script
-└── README.md
+│   │   ├── components/         # Reusable UI components
+│   │   ├── pages/              # Application pages
+│   │   ├── services/           # API service layer
+│   │   ├── context/            # React context providers
+│   │   └── styles/             # CSS styling
+│   └── public/                 # Static assets
+├── start.bat                   # Windows startup script
+└── stop.bat                    # Windows shutdown script
+```
+
+## 🚦 Deployment
+
+### Production Considerations
+1. **Environment Variables**: Use external configuration for secrets
+2. **Database**: Configure production-grade MySQL setup
+3. **Load Balancing**: Consider multiple instances behind load balancer
+4. **Monitoring**: Enable Spring Boot Actuator endpoints
+5. **Logging**: Configure appropriate log levels and aggregation
+
+### Docker Deployment (Optional)
+Create Dockerfiles for each service and use Docker Compose for orchestration.
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Spring Boot and Spring Cloud for microservices framework
+- React ecosystem for modern frontend development
+- Google Gemini AI for quiz generation capabilities
+- Netflix Eureka for service discovery
+- JWT for secure authentication
 
 ---
 
-## 🏃‍♂️ Development & Deployment
-
-### Running Locally
-1. **Start MySQL**: Ensure MySQL server is running.
-2. **Database**: Create `quiz_apc` database and run any initial scripts.
-3. **Eureka Server**: Start first (`mvn spring-boot:run` in eureka-server).
-4. **Services**: Start in any order after Eureka.
-5. **Frontend**: `npm install && npm start`.
-6. **Scripts**: Use `start.bat` for Windows to start all services.
-
-### Building
-- **Backend**: `mvn clean install` in each service directory.
-- **Frontend**: `npm run build` for production build.
-
-### Docker (Optional)
-- Each service can be containerized with Docker.
-- Use `docker-compose.yml` for orchestrated deployment.
-- Example: `docker build -t quiz-api-gateway ./backend/api-gateway`
-
-### Testing
-- **Backend**: `mvn test` for unit tests.
-- **Frontend**: `npm test` for React tests.
-- **Integration**: Manual testing with Postman or frontend.
-
-### Monitoring
-- **Eureka Dashboard**: http://localhost:8761 for service health.
-- **Spring Actuator**: `/actuator/health` on each service for metrics.
-- **Logs**: Check console output for errors and debugging.
+For support or questions, please open an issue in the repository.

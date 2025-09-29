@@ -1,51 +1,130 @@
-/* Quiz Forms Common Styles */
+/* Quiz Forms - Neo-Brutalism Theme */
 
+/* Import the color variables from the main App.css */
+:root {
+  /* Neo-Brutalism Colors from Landing Page */
+  --primary: #FF6B35;
+  --secondary: #00D2FF;
+  --accent: #FFE66D;
+  --success: #00F5A0;
+  --warning: #FFB627;
+  --error: #FF5E5B;
+  --dark: #1A1B23;
+  --light: #F8F9FA;
+  --gray: #6C757D;
+  --white: #FFFFFF;
+  --black: #000000;
+  
+  /* Brutal Colors */
+  --brutal-pink: #FF3366;
+  --brutal-cyan: #00FFCC;
+  --brutal-purple: #6633FF;
+  --brutal-yellow: #FFCC00;
+  --brutal-green: #33FF66;
+  
+  /* Typography */
+  --font-primary: 'Arial Black', Arial, sans-serif;
+  --font-secondary: 'Arial', sans-serif;
+  
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-xxl: 3rem;
+  
+  /* Borders */
+  --border-thick: 4px solid var(--black);
+  --border-medium: 3px solid var(--black);
+  --border-thin: 2px solid var(--black);
+  
+  /* Shadows */
+  --shadow-brutal: 8px 8px 0px var(--black);
+  --shadow-brutal-hover: 12px 12px 0px var(--black);
+  --shadow-card: 6px 6px 0px var(--black);
+  --shadow-small: 4px 4px 0px var(--black);
+}
+
+/* Main Page Layout */
 .quiz-create-page,
 .quiz-ai-generate-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 2rem 0;
+  background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+  padding: var(--space-xl) 0;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.quiz-create-page::before,
+.quiz-ai-generate-page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
 }
 
 .page-header {
   text-align: center;
-  margin-bottom: 2rem;
-  color: white;
+  margin-bottom: var(--space-xxl);
+  color: var(--white);
+  position: relative;
+  z-index: 1;
 }
 
 .page-header h1 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
+  font-family: var(--font-primary);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 900;
+  margin-bottom: var(--space-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
+  gap: var(--space-lg);
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  text-shadow: 4px 4px 0 var(--black);
 }
 
 .page-header h1 i {
-  color: #4ade80;
+  color: var(--brutal-yellow);
+  font-size: 1.2em;
+  text-shadow: 2px 2px 0 var(--black);
 }
 
 .page-header p {
-  font-size: 1.1rem;
-  opacity: 0.9;
+  font-size: 1.2rem;
+  text-shadow: 2px 2px 0 var(--black);
   margin: 0;
 }
 
+/* Form Containers */
 .quiz-form-container,
 .generation-setup,
 .quiz-review {
-  background: white;
-  border-radius: 1rem;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  padding: 2rem;
+  background: var(--white);
+  border: var(--border-thick);
+  box-shadow: var(--shadow-brutal);
+  padding: var(--space-xl);
   max-width: 1000px;
-  margin: 0 auto;
+  margin: 0 auto var(--space-xl);
+  position: relative;
+  z-index: 1;
 }
 
+.quiz-form-container:hover,
+.generation-setup:hover,
+.quiz-review:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-brutal-hover);
+}
+
+/* Form Sections */
 .form-section {
-  margin-bottom: 2rem;
+  margin-bottom: var(--space-xl);
 }
 
 .form-section:last-child {
@@ -53,19 +132,36 @@
 }
 
 .form-section h2 {
-  color: #1f2937;
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid #e5e7eb;
+  font-family: var(--font-primary);
+  color: var(--dark);
+  font-size: 1.8rem;
+  font-weight: 900;
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: var(--border-medium);
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  position: relative;
+}
+
+.form-section h2::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 60px;
+  height: 6px;
+  background: var(--primary);
+  transform: skew(-12deg);
 }
 
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-lg);
+  flex-wrap: wrap;
+  gap: var(--space-md);
 }
 
 .section-header h2 {
@@ -74,11 +170,16 @@
   padding: 0;
 }
 
+.section-header h2::after {
+  display: none;
+}
+
+/* Form Layout */
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-lg);
+  margin-bottom: var(--space-lg);
 }
 
 .form-grid .span-2 {
@@ -95,36 +196,49 @@
   }
 }
 
+/* Form Elements */
 .form-group {
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-lg);
 }
 
 .form-group label {
   display: block;
-  font-weight: 600;
-  color: #374151;
-  margin-bottom: 0.5rem;
+  font-family: var(--font-primary);
+  font-weight: 900;
+  color: var(--dark);
+  margin-bottom: var(--space-sm);
   font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .form-input,
 .form-select,
 .form-textarea {
   width: 100%;
-  padding: 0.75rem;
-  border: 2px solid #e5e7eb;
-  border-radius: 0.5rem;
-  font-size: 0.9rem;
-  transition: all 0.2s;
-  background: white;
+  padding: var(--space-md);
+  border: var(--border-medium);
+  background: var(--white);
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  font-family: var(--font-secondary);
 }
 
 .form-input:focus,
 .form-select:focus,
 .form-textarea:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: var(--primary);
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-small);
+  background: var(--light);
+}
+
+.form-input:hover,
+.form-select:hover,
+.form-textarea:hover {
+  border-color: var(--brutal-cyan);
 }
 
 .form-textarea {
@@ -442,62 +556,70 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 0.5rem;
-  font-weight: 600;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg);
+  border: var(--border-medium);
+  font-family: var(--font-primary);
+  font-weight: 900;
   font-size: 0.9rem;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
   text-decoration: none;
-  min-height: 44px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-height: 48px;
 }
 
 .btn:disabled {
-  opacity: 0.5;
+  opacity: 0.6;
   cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
 }
 
 .btn-primary {
-  background: #3b82f6;
-  color: white;
+  background: var(--primary);
+  color: var(--white);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #2563eb;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  background: var(--brutal-pink);
+  transform: translate(-4px, -4px);
+  box-shadow: var(--shadow-brutal);
 }
 
 .btn-secondary {
-  background: #6b7280;
-  color: white;
+  background: var(--gray);
+  color: var(--white);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: #4b5563;
+  background: var(--dark);
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-card);
 }
 
 .btn-danger {
-  background: #ef4444;
-  color: white;
+  background: var(--error);
+  color: var(--white);
 }
 
 .btn-danger:hover:not(:disabled) {
-  background: #dc2626;
+  background: var(--brutal-pink);
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-card);
 }
 
 .btn-sm {
-  padding: 0.5rem 1rem;
+  padding: var(--space-sm) var(--space-md);
   font-size: 0.8rem;
   min-height: 36px;
 }
 
 .btn-large {
-  padding: 1rem 2rem;
-  font-size: 1rem;
-  min-height: 52px;
+  padding: var(--space-lg) var(--space-xl);
+  font-size: 1.1rem;
+  min-height: 56px;
 }
 
 /* Form Actions */

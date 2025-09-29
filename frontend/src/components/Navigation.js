@@ -11,6 +11,12 @@ const Navigation = ({ activeSection, onNavigate }) => {
     setMenuOpen(false);
   };
 
+  const handleNavigate = (section) => {
+    if (onNavigate && typeof onNavigate === 'function') {
+      onNavigate(section);
+    }
+  };
+
   return (
     <nav className="navbar">
       <div className="nav-container">
@@ -22,12 +28,13 @@ const Navigation = ({ activeSection, onNavigate }) => {
         </div>
 
         <div className={`nav-menu ${menuOpen ? "active" : ""}`} id="nav-menu">
-          <button 
+          <Link 
+            to="/"
             className={`nav-link ${activeSection === 'home' ? 'active' : ''}`}
-            onClick={() => onNavigate('home')}
+            onClick={() => handleNavigate('home')}
           >
             Home
-          </button>
+          </Link>
 
           {isAuthenticated ? (
             <>

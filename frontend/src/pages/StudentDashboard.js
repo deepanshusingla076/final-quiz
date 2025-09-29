@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import quizService from '../services/quizService';
 import resultService from '../services/resultService';
@@ -28,7 +29,7 @@ const StudentDashboard = () => {
     try {
       setLoading(true);
       
-      // Try to fetch available quizzes with fallback to mock data
+      // Fetch available quizzes
       let quizzes = [];
       try {
         quizzes = await quizService.getAllQuizzes();
@@ -36,45 +37,12 @@ const StudentDashboard = () => {
           quizzes = [];
         }
       } catch (error) {
-        console.warn('Using mock quiz data:', error);
-        // Mock quiz data
-        quizzes = [
-          {
-            id: 1,
-            title: 'JavaScript Fundamentals',
-            description: 'Test your knowledge of JavaScript basics',
-            difficulty: 'MEDIUM',
-            timeLimit: 30,
-            active: true,
-            createdBy: 'teacher',
-            questionCount: 10
-          },
-          {
-            id: 2,
-            title: 'React Basics',
-            description: 'Learn the fundamentals of React',
-            difficulty: 'EASY',
-            timeLimit: 25,
-            active: true,
-            createdBy: 'teacher',
-            questionCount: 8
-          },
-          {
-            id: 3,
-            title: 'Spring Boot Advanced',
-            description: 'Advanced concepts in Spring Boot',
-            difficulty: 'HARD',
-            timeLimit: 45,
-            active: true,
-            createdBy: 'teacher',
-            questionCount: 15
-          }
-        ];
+        console.error('Error fetching quizzes:', error);
+        toast.error('Failed to load available quizzes. Please check your connection.');
+        quizzes = [];
       }
       
-      setAvailableQuizzes(quizzes.filter(quiz => quiz.active));
-
-      // Try to fetch user's results with fallback to mock data
+      // Fetch user's results
       let userResults = [];
       try {
         userResults = await resultService.getResultsByUser(user.id);
@@ -82,34 +50,9 @@ const StudentDashboard = () => {
           userResults = [];
         }
       } catch (error) {
-        console.warn('Using mock result data:', error);
-        // Mock result data
-        userResults = [
-          {
-            id: 1,
-            quizId: 1,
-            quizTitle: 'JavaScript Fundamentals',
-            score: 85,
-            completedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-            timeTaken: 1800 // 30 minutes in seconds
-          },
-          {
-            id: 2,
-            quizId: 2,
-            quizTitle: 'React Basics',
-            score: 92,
-            completedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-            timeTaken: 1200 // 20 minutes in seconds
-          },
-          {
-            id: 3,
-            quizId: 1,
-            quizTitle: 'JavaScript Fundamentals',
-            score: 78,
-            completedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-            timeTaken: 1950 // 32.5 minutes in seconds
-          }
-        ];
+        console.error('Error fetching results:', error);
+        toast.error('Failed to load quiz results. Please check your connection.');
+        userResults = [];
       }
       
       setRecentResults(userResults.slice(0, 5)); // Show recent 5 results
@@ -123,7 +66,7 @@ const StudentDashboard = () => {
       });
 
       // Add attempt information to available quizzes
-      const quizzesWithAttempts = quizzes.filter(quiz => quiz.active).map(quiz => ({
+      const quizzesWithAttempts = quizzes.filter(quiz => quiz.active || quiz.isActive).map(quiz => ({
         ...quiz,
         hasAttempted: !!attemptedQuizMap[quiz.id],
         attemptedResult: attemptedQuizMap[quiz.id] || null
@@ -150,27 +93,7 @@ const StudentDashboard = () => {
 
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
-      toast.error('Some data may not be available. Using sample data.');
-      
-      // Fallback to completely mock data
-      setAvailableQuizzes([
-        {
-          id: 1,
-          title: 'Sample Quiz 1',
-          description: 'This is a sample quiz',
-          difficulty: 'MEDIUM',
-          timeLimit: 30,
-          active: true,
-          createdBy: 'teacher'
-        }
-      ]);
-      
-      setStats({
-        totalAttempts: 3,
-        averageScore: 85,
-        quizzesCompleted: 2,
-        bestScore: 92
-      });
+      toast.error('Failed to load dashboard data. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -281,10 +204,6 @@ const StudentDashboard = () => {
                 </div>
                 <h3>No quiz attempts yet</h3>
                 <p>Take your first quiz to see your results here!</p>
-                <a href="/quiz/browse" className="btn btn-primary">
-                  <i className="fas fa-play"></i>
-                  Browse Quizzes
-                </a>
               </div>
             ) : (
               <div className="results-list">

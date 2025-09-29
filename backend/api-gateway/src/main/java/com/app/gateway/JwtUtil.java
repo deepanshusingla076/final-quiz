@@ -18,21 +18,27 @@ public class JwtUtil {
     private final SecretKey secretKey;
     private final long expirationMs;
 
-    public JwtUtil(@Value("${jwt.secret:Deepanshu@123ds}") String jwtSecret,
+    public JwtUtil(@Value("${jwt.secret:2b7e151628aed2a6abf7158809cf4f3c2b7e151628aed2a6abf7158809cf4f3c2b7e151628aed2a6abf7158809cf4f3c}") String jwtSecret,
                    @Value("${jwt.expirationMs:3600000}") long expirationMs) {
         this.secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes());
         this.expirationMs = expirationMs;
     }
 
-    // Generate JWT token with username and role
-    public String generateToken(String username, String role) {
+    // Generate JWT token with username, role, and userId
+    public String generateToken(String username, String role, String userId) {
         return Jwts.builder()
                 .subject(username)
                 .claim("role", role)
+                .claim("userId", userId)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expirationMs))
                 .signWith(secretKey, Jwts.SIG.HS512)
                 .compact();
+    }
+
+    // Generate JWT token with username and role (backward compatibility)
+    public String generateToken(String username, String role) {
+        return generateToken(username, role, null);
     }
 
     // Extract username from JWT token

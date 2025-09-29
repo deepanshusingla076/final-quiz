@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import quizService from '../services/quizService';
 import resultService from '../services/resultService';
@@ -27,7 +28,7 @@ const TeacherDashboard = () => {
     try {
       setLoading(true);
       
-      // Try to fetch user's quizzes with fallback to mock data
+      // Fetch user's quizzes
       let userQuizzes = [];
       try {
         userQuizzes = await quizService.getQuizzesByUser(user.id);
@@ -35,52 +36,18 @@ const TeacherDashboard = () => {
           userQuizzes = [];
         }
       } catch (error) {
-        console.warn('Using mock quiz data for teacher:', error);
-        // Mock teacher quiz data
-        userQuizzes = [
-          {
-            id: 1,
-            title: 'JavaScript Fundamentals',
-            description: 'Test your knowledge of JavaScript basics',
-            difficulty: 'MEDIUM',
-            timeLimit: 30,
-            active: true,
-            createdBy: user.id,
-            createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-            questionCount: 10
-          },
-          {
-            id: 2,
-            title: 'React Basics',
-            description: 'Learn the fundamentals of React',
-            difficulty: 'EASY',
-            timeLimit: 25,
-            active: true,
-            createdBy: user.id,
-            createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-            questionCount: 8
-          },
-          {
-            id: 3,
-            title: 'Spring Boot Advanced',
-            description: 'Advanced concepts in Spring Boot',
-            difficulty: 'HARD',
-            timeLimit: 45,
-            active: false,
-            createdBy: user.id,
-            createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-            questionCount: 15
-          }
-        ];
+        console.error('Error fetching quizzes:', error);
+        toast.error('Failed to load quizzes. Please check your connection.');
+        userQuizzes = [];
       }
       
       setQuizzes(userQuizzes);
 
       // Calculate stats
       const totalQuizzes = userQuizzes.length;
-      const activeQuizzes = userQuizzes.filter(quiz => quiz.active).length;
+      const activeQuizzes = userQuizzes.filter(quiz => quiz.active || quiz.isActive).length;
       
-      // Try to fetch attempts and scores for each quiz with mock fallback
+      // Fetch attempts and scores for each quiz
       let totalAttempts = 0;
       let averageScore = 0;
 
@@ -97,20 +64,15 @@ const TeacherDashboard = () => {
               totalScoreCount++;
             }
           } catch (error) {
-            // Use mock stats for each quiz
-            const mockAttempts = Math.floor(Math.random() * 20) + 5;
-            const mockScore = Math.floor(Math.random() * 30) + 70;
-            totalAttempts += mockAttempts;
-            totalScores += mockScore;
-            totalScoreCount++;
+            console.warn(`Could not fetch stats for quiz ${quiz.id}:`, error);
           }
         }
 
         averageScore = totalScoreCount > 0 ? Math.round(totalScores / totalScoreCount) : 0;
       } catch (error) {
-        console.warn('Using mock statistics:', error);
-        totalAttempts = Math.floor(Math.random() * 50) + 20;
-        averageScore = Math.floor(Math.random() * 20) + 75;
+        console.error('Error calculating statistics:', error);
+        totalAttempts = 0;
+        averageScore = 0;
       }
 
       setStats({
@@ -122,26 +84,7 @@ const TeacherDashboard = () => {
 
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
-      toast.error('Some data may not be available. Using sample data.');
-      
-      // Fallback to completely mock data
-      setQuizzes([
-        {
-          id: 1,
-          title: 'Sample Quiz',
-          description: 'This is a sample quiz',
-          difficulty: 'MEDIUM',
-          active: true,
-          createdAt: new Date().toISOString()
-        }
-      ]);
-      
-      setStats({
-        totalQuizzes: 1,
-        totalAttempts: 15,
-        averageScore: 82,
-        activeQuizzes: 1
-      });
+      toast.error('Failed to load dashboard data. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -239,20 +182,24 @@ const TeacherDashboard = () => {
         <motion.div className="quick-actions" variants={itemVariants}>
           <h2>Quick Actions</h2>
           <div className="actions-grid">
-            <motion.a href="/quiz/create" className="action-card create" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-              <div className="action-icon"><i className="fas fa-plus"></i></div>
-              <div className="action-content">
-                <h3>Create Quiz</h3>
-                <p>Build a custom quiz</p>
-              </div>
-            </motion.a>
-            <motion.a href="/analytics" className="action-card analytics" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-              <div className="action-icon"><i className="fas fa-chart-bar"></i></div>
-              <div className="action-content">
-                <h3>Analytics</h3>
-                <p>View performance insights</p>
-              </div>
-            </motion.a>
+            <motion.div className="action-card create" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Link to="/quiz/create" className="action-link">
+                <div className="action-icon"><i className="fas fa-plus"></i></div>
+                <div className="action-content">
+                  <h3>Create Quiz</h3>
+                  <p>Build a custom quiz</p>
+                </div>
+              </Link>
+            </motion.div>
+            <motion.div className="action-card analytics" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Link to="/analytics" className="action-link">
+                <div className="action-icon"><i className="fas fa-chart-bar"></i></div>
+                <div className="action-content">
+                  <h3>Analytics</h3>
+                  <p>View performance insights</p>
+                </div>
+              </Link>
+            </motion.div>
           </div>
         </motion.div>
 
@@ -260,10 +207,10 @@ const TeacherDashboard = () => {
         <motion.div className="recent-quizzes" variants={itemVariants}>
           <div className="section-header">
             <h2>Your Quizzes</h2>
-            <a href="/quiz/create" className="btn btn-primary">
+            <Link to="/quiz/create" className="btn btn-primary">
               <i className="fas fa-plus"></i>
               Create New Quiz
-            </a>
+            </Link>
           </div>
 
           {quizzes.length === 0 ? (
@@ -273,10 +220,10 @@ const TeacherDashboard = () => {
               </div>
               <h3>No quizzes yet</h3>
               <p>Create your first quiz to get started!</p>
-              <a href="/quiz/create" className="btn btn-primary btn-large">
+              <Link to="/quiz/create" className="btn btn-primary btn-large">
                 <i className="fas fa-plus"></i>
                 Create Your First Quiz
-              </a>
+              </Link>
             </div>
           ) : (
             <div className="quizzes-grid">
