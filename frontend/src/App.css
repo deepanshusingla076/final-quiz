@@ -1035,6 +1035,37 @@ p {
     flex-direction: column;
     position: relative;
     overflow: hidden;
+
+    /* Animated SVG blobs background */
+    z-index: 0;
+}
+
+.auth-bg-blob {
+    position: absolute;
+    z-index: 1;
+    opacity: 0.25;
+    filter: blur(8px);
+    animation: blobMove 18s ease-in-out infinite alternate;
+}
+.auth-bg-blob.blob1 {
+    top: -120px; left: -120px; width: 400px; height: 400px; background: var(--brutal-pink);
+    border-radius: 50% 60% 70% 40% / 60% 40% 70% 50%;
+    animation-delay: 0s;
+}
+.auth-bg-blob.blob2 {
+    bottom: -100px; right: -100px; width: 350px; height: 350px; background: var(--brutal-cyan);
+    border-radius: 60% 40% 60% 70% / 50% 60% 40% 70%;
+    animation-delay: 4s;
+}
+.auth-bg-blob.blob3 {
+    top: 40%; left: 60%; width: 300px; height: 300px; background: var(--brutal-yellow);
+    border-radius: 60% 60% 40% 70% / 60% 50% 60% 40%;
+    animation-delay: 8s;
+}
+@keyframes blobMove {
+    0% { transform: scale(1) translate(0,0) rotate(0deg); }
+    100% { transform: scale(1.1) translate(40px, 40px) rotate(20deg); }
+}
 }
 
 .auth-navbar {
@@ -1113,12 +1144,22 @@ p {
 }
 
 .auth-card {
-    background: var(--white);
+    background: rgba(255,255,255,0.85);
     border: var(--border-thick);
-    box-shadow: var(--shadow-brutal);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18), var(--shadow-brutal);
     width: 100%;
     max-width: 500px;
     min-width: 320px;
+    border-radius: 2.5rem;
+    backdrop-filter: blur(8px);
+    position: relative;
+    z-index: 2;
+    animation: fadeInUp 1.2s cubic-bezier(.23,1.01,.32,1) both;
+}
+@keyframes fadeInUp {
+    0% { opacity: 0; transform: translateY(60px) scale(0.98); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
 }
 
 .auth-card.compact {
@@ -1161,6 +1202,12 @@ p {
 
 .auth-form {
     padding: var(--space-lg);
+    animation: fadeIn 1.2s cubic-bezier(.23,1.01,.32,1) both;
+}
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
 }
 
 .auth-form.compact {
@@ -1206,18 +1253,20 @@ p {
     width: 100%;
     padding: var(--space-sm) var(--space-md);
     border: var(--border-thick);
-    background: var(--white);
-    font-size: 0.95rem;
+    background: rgba(255,255,255,0.95);
+    font-size: 1.05rem;
     font-weight: 600;
-    transition: all 0.2s ease;
+    border-radius: 1.2rem;
+    box-shadow: 0 2px 12px 0 rgba(31, 38, 135, 0.08);
+    transition: all 0.25s cubic-bezier(.23,1.01,.32,1);
 }
 
 .form-input:focus,
 .form-select:focus {
     outline: none;
     border-color: var(--primary);
-    transform: translate(-2px, -2px);
-    box-shadow: var(--shadow-small);
+    transform: scale(1.04) translate(-2px, -2px);
+    box-shadow: 0 4px 24px 0 var(--primary), var(--shadow-small);
     background: var(--light);
 }
 
@@ -1251,21 +1300,44 @@ p {
 .auth-submit-btn {
     width: 100%;
     padding: var(--space-md) var(--space-lg);
-    background: var(--primary);
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
     color: var(--white);
     border: var(--border-thick);
     font-family: var(--font-primary);
     font-weight: 900;
-    font-size: 1rem;
+    font-size: 1.1rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    border-radius: 1.5rem;
+    box-shadow: 0 4px 24px 0 var(--primary), var(--shadow-brutal);
+    transition: all 0.25s cubic-bezier(.23,1.01,.32,1);
     display: flex;
     align-items: center;
     justify-content: center;
     gap: var(--space-sm);
     margin: var(--space-lg) 0;
+    position: relative;
+    overflow: hidden;
+}
+.auth-submit-btn::after {
+    content: '';
+    position: absolute;
+    left: -75%;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    background: rgba(255,255,255,0.18);
+    transform: skewX(-20deg);
+    transition: left 0.5s cubic-bezier(.23,1.01,.32,1);
+    z-index: 1;
+}
+.auth-submit-btn:hover::after {
+    left: 120%;
+}
+.auth-submit-btn span, .auth-submit-btn i {
+    position: relative;
+    z-index: 2;
 }
 
 .auth-submit-btn:hover:not(:disabled) {
