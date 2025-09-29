@@ -1,6 +1,5 @@
 
-// Import mock auth for fallback
-import testAuth from './testAuth';
+
 
 // Base URL for API calls - use API Gateway
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/api';
@@ -84,22 +83,13 @@ const authService = {
         body: JSON.stringify(userData),
       });
     } catch (error) {
-      console.warn('Backend registration failed, using mock data:', error.message);
-      if (error.message === 'TIMEOUT' || error.message === 'NETWORK_ERROR') {
-        // Fall back to mock registration
-        return await testAuth.mockRegister(userData);
-      }
+      console.error('Registration failed:', error.message);
       throw error;
     }
   },
 
   // Login user
   login: async (credentials) => {
-    // For now, always use mock authentication until JWT is properly configured
-    console.log('Using mock authentication for development...');
-    return await testAuth.mockLogin(credentials);
-    
-    /* Commented out backend authentication until JWT is properly configured
     try {
       const response = await fetchAPI('/auth/login', {
         method: 'POST',
@@ -108,15 +98,9 @@ const authService = {
       console.log('Backend login successful:', response);
       return response;
     } catch (error) {
-      console.warn('Backend login failed, using mock data:', error.message);
-      if (error.message === 'TIMEOUT' || error.message === 'NETWORK_ERROR' || error.message === 'BACKEND_ERROR') {
-        console.log('Falling back to mock authentication...');
-        // Fall back to mock authentication
-        return await testAuth.mockLogin(credentials);
-      }
+      console.error('Login failed:', error.message);
       throw error;
     }
-    */
   },
 
   // Refresh token

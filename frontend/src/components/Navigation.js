@@ -89,7 +89,8 @@ const Navigation = ({ activeSection, onNavigate }) => {
               <Link to="/auth" className="nav-link">
                 Login
               </Link>
-              <Link to="/auth" className="nav-link btn-primary">
+              <Link to="/auth" className="btn btn-get-started nav-register-btn">
+                <i className="fas fa-user-plus"></i>
                 Register
               </Link>
             </>

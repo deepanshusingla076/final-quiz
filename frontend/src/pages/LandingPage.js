@@ -8,7 +8,7 @@ import "../App.css";
 const LandingPage = () => {
   const { isAuthenticated } = useAuth();
   const [activeSection, setActiveSection] = useState('home');
-  // Handle navigation highlighting
+
   useEffect(() => {
     const handleScroll = () => {
       const sections = ['home'];
@@ -58,11 +58,8 @@ const LandingPage = () => {
   };
 
   return (
-
     <div className="landing-page">
-      {/* Navigation */}
       <Navigation activeSection={activeSection} onNavigate={scrollToSection} />
-      {/* Hero Section */}
       <motion.section 
         id="home"
         className="hero"
@@ -88,7 +85,7 @@ const LandingPage = () => {
                   Go to Dashboard
                 </Link>
               ) : (
-                <Link to="/auth" className="btn btn-primary btn-large">
+                <Link to="/auth" className="btn btn-get-started btn-large">
                   <i className="fas fa-rocket"></i>
                   Get Started Free
                 </Link>
@@ -117,7 +114,7 @@ const LandingPage = () => {
         </div>
       </motion.section>
 
-      {/* Features Section */}
+
       <section className="features">
         <div className="container">
           <h2 className="section-title">Why Choose <strong>QWIZZ</strong>?</h2>
@@ -193,7 +190,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Stats */}
+
       <section className="stats">
         <div className="container">
           <div className="stats-grid">
@@ -217,7 +214,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* CTA */}
+
       <section className="cta">
         <div className="container">
           <div className="cta-content">
@@ -226,24 +223,24 @@ const LandingPage = () => {
             <div className="cta-buttons">
               {isAuthenticated ? (
                 <>
-                  <a href="/quiz/create" className="btn btn-primary btn-large">
+                  <a href="/quiz/create" className="btn neo-brut-btn neo-brut-primary btn-large">
                     <i className="fas fa-plus"></i>
-                    Create Your First Quiz
+                    <span className="neo-brut-btn-text">Create Your First Quiz</span>
                   </a>
-                  <a href="/quiz/ai-generate" className="btn btn-accent btn-large">
+                  <a href="/quiz/ai-generate" className="btn neo-brut-btn neo-brut-accent btn-large">
                     <i className="fas fa-magic"></i>
-                    Try AI Generator
+                    <span className="neo-brut-btn-text">Try AI Generator</span>
                   </a>
                 </>
               ) : (
                 <>
-                  <a href="/auth" className="btn btn-primary btn-large">
+                  <a href="/auth" className="btn btn-get-started btn-large">
                     <i className="fas fa-user-plus"></i>
-                    Sign Up Now
+                    Register
                   </a>
-                  <a href="/auth" className="btn btn-secondary btn-large">
+                  <a href="/auth" className="btn neo-brut-btn neo-brut-secondary btn-large">
                     <i className="fas fa-sign-in-alt"></i>
-                    Login
+                    <span className="neo-brut-btn-text">Login</span>
                   </a>
                 </>
               )}
@@ -252,45 +249,51 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Footer */}
+
       <footer className="footer">
         <div className="footer-container">
           <div className="footer-section">
             <h3>QWIZZ</h3>
             <p>Interactive quiz platform with AI-powered quiz generation</p>
-            <div className="social-links">
-              <button type="button" className="social-link" onClick={() => {}}><i className="fab fa-twitter"></i></button>
-              <button type="button" className="social-link" onClick={() => {}}><i className="fab fa-facebook"></i></button>
-              <button type="button" className="social-link" onClick={() => {}}><i className="fab fa-instagram"></i></button>
-              <button type="button" className="social-link" onClick={() => {}}><i className="fab fa-github"></i></button>
-            </div>
           </div>
-
           <div className="footer-section">
             <h4>Quick Links</h4>
             <ul>
-              <li><a href="/">Home</a></li>
-              <li><a href="/features">Features</a></li>
-              <li><a href="/about">About</a></li>
+              <li><Link to="/">Home</Link></li>
+              <li><Link to="/features">Features</Link></li>
+              <li><Link to="/about">About</Link></li>
             </ul>
           </div>
-
           <div className="footer-section">
             <h4>Support</h4>
             <ul>
-              <li><a href="/help">Help Center</a></li>
-              <li><a href="/contact">Contact Us</a></li>
-              <li><a href="/privacy">Privacy Policy</a></li>
-              <li><a href="/terms">Terms of Service</a></li>
+              <li><Link to="/help">Help Center</Link></li>
+              <li><Link to="/contact">Contact Us</Link></li>
+              <li><Link to="/privacy">Privacy Policy</Link></li>
+              <li><Link to="/terms">Terms of Service</Link></li>
             </ul>
+          </div>
+          <div className="footer-section">
+            <h4>Follows</h4>
+            <div className="social-links">
+              <a href="https://twitter.com/" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+                <i className="fa-brands fa-twitter" style={{ fontSize: '2rem' }}></i>
+              </a>
+              <a href="https://facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                <i className="fa-brands fa-facebook-f" style={{ fontSize: '2rem' }}></i>
+              </a>
+              <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                <i className="fa-brands fa-instagram" style={{ fontSize: '2rem' }}></i>
+              </a>
+              <a href="https://github.com/" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+                <i className="fa-brands fa-github" style={{ fontSize: '2rem' }}></i>
+              </a>
+            </div>
           </div>
         </div>
 
         <div className="footer-bottom">
-          <p>
-            &copy; 2024 QWIZZ. All rights reserved. Made with{" "}
-            <i className="fas fa-heart"></i>
-          </p>
+          <p>&copy; 2024 QWIZZ. All rights reserved</p>
         </div>
       </footer>
     </div>

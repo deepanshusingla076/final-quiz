@@ -4,7 +4,8 @@ import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 
 const AuthPage = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  // Always default to login tab on mount
+  const [isLogin, setIsLogin] = useState(() => true);
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -207,22 +208,6 @@ const AuthPage = () => {
             </p>
 
             {!isLogin && (
-              <div className="form-group">
-                <label htmlFor="email">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  required={!isLogin}
-                  className="form-input"
-                  placeholder="your@email.com"
-                />
-              </div>
-            )}
-
-            {!isLogin && (
               <div className="form-row">
                 <div className="form-group">
                   <label htmlFor="firstName">First Name</label>
@@ -237,7 +222,6 @@ const AuthPage = () => {
                     placeholder="First name"
                   />
                 </div>
-
                 <div className="form-group">
                   <label htmlFor="lastName">Last Name</label>
                   <input
@@ -251,6 +235,22 @@ const AuthPage = () => {
                     placeholder="Last name"
                   />
                 </div>
+              </div>
+            )}
+
+            {!isLogin && (
+              <div className="form-group">
+                <label htmlFor="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required={!isLogin}
+                  className="form-input"
+                  placeholder="your@email.com"
+                />
               </div>
             )}
 

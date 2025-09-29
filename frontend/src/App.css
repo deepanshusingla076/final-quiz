@@ -1,7 +1,4 @@
-﻿/* QWIZZ - New Brutalist Design System */
-
-/* CSS Reset and Base Styles */
-* {
+﻿* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -204,6 +201,12 @@ p {
     transition: all 0.2s ease;
 }
 
+.auth-submit-btn:active {
+    background: var(--brutal-yellow);
+    color: var(--black);
+    box-shadow: 0 0 0 var(--black);
+}
+
 .dropdown-item:hover {
     background: var(--brutal-cyan);
     color: var(--black);
@@ -269,6 +272,94 @@ p {
     font-size: 1rem;
     letter-spacing: 0.5px;
     position: relative;
+}
+
+/* Custom orange button for Get Started Free */
+.btn-get-started {
+    background: var(--primary);
+    color: var(--white);
+    border-radius: 0;
+    border: var(--border-thick);
+    box-shadow: var(--shadow-brutal);
+}
+.btn-get-started:focus,
+.btn-get-started:hover,
+.btn-get-started:active {
+    background: var(--brutal-pink);
+    color: var(--white);
+    transform: translate(-4px, -4px);
+    box-shadow: var(--shadow-brutal-hover);
+}
+
+/* Navigation register button styling */
+.nav-register-btn {
+    /* margin-left: 0.5rem; */
+    border-radius: 0;
+    border: var(--border-thick);
+    box-shadow: var(--shadow-small);
+}
+
+.nav-register-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: var(--shadow-small);
+}
+
+/* Neo-Brutalist Button Styles */
+.neo-brut-btn {
+    border-radius: 0.5rem;
+    box-shadow: var(--shadow-brutal);
+    border: var(--border-thick);
+    background: var(--white);
+    color: var(--black);
+    position: relative;
+    overflow: hidden;
+    font-family: var(--font-primary);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.2s cubic-bezier(.4,0,.2,1);
+}
+
+.neo-brut-btn:hover {
+    background: var(--brutal-yellow);
+    color: var(--black);
+    transform: translate(-4px, -4px);
+    box-shadow: var(--shadow-brutal-hover);
+}
+
+.neo-brut-primary {
+    background: var(--primary);
+    color: var(--white);
+}
+.neo-brut-primary:hover {
+    background: var(--brutal-pink);
+    color: var(--white);
+}
+
+.neo-brut-secondary {
+    background: var(--secondary);
+    color: var(--black);
+}
+.neo-brut-secondary:hover {
+    background: var(--brutal-cyan);
+    color: var(--black);
+}
+
+.neo-brut-accent {
+    background: var(--accent);
+    color: var(--black);
+}
+.neo-brut-accent:hover {
+    background: var(--brutal-yellow);
+    color: var(--black);
+}
+
+.neo-brut-btn-text {
+    font-size: 1.1em;
+    font-family: var(--font-primary);
+    font-weight: 900;
+    letter-spacing: 1px;
+    margin-left: 0.5em;
 }
 
 .btn-primary {
@@ -696,22 +787,31 @@ p {
 
 .social-links {
     display: flex;
-    gap: var(--space-md);
+    gap: var(--space-lg);
     margin-top: var(--space-lg);
 }
 
-.social-links button {
-    color: var(--white);
+.social-links a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    background: var(--accent);
+    color: var(--black);
     font-size: 1.5rem;
+    text-decoration: none;
+    border: var(--border-medium);
+    box-shadow: var(--shadow-small);
     transition: all 0.2s ease;
-    background: none;
-    border: none;
-    cursor: pointer;
 }
 
-.social-links button:hover {
-    color: var(--accent);
-    transform: scale(1.2);
+.social-links a:hover {
+    background: var(--brutal-pink);
+    color: var(--white);
+    transform: translate(-2px, -2px);
+    box-shadow: var(--shadow-card);
 }
 
 .footer-bottom {
@@ -1769,3 +1869,12 @@ p {
     text-align: center;
   }
 }
+
+
+
+/* .social-links {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; 
+  align-items: flex-start; 
+} */
