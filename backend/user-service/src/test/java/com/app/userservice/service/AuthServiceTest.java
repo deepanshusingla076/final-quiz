@@ -48,7 +48,7 @@ class AuthServiceTest {
         registerRequest.setPassword("Test123!@#");
         registerRequest.setFirstName("Test");
         registerRequest.setLastName("User");
-        registerRequest.setRole(User.Role.STUDENT);
+        registerRequest.setRole("STUDENT");
 
         loginRequest = new LoginRequest();
         loginRequest.setUsernameOrEmail("testuser");
@@ -94,7 +94,7 @@ class AuthServiceTest {
     @Test
     void testSuccessfulLogin() {
         // Given
-        when(userRepository.findByUsernameOrEmail(anyString(), anyString()))
+        when(userRepository.findByUsernameOrEmail(anyString()))
                 .thenReturn(Optional.of(testUser));
         when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
         when(jwtTokenProvider.generateToken(anyString(), anyString(), any(Long.class)))
@@ -117,7 +117,7 @@ class AuthServiceTest {
     @Test
     void testLoginWithInvalidCredentials() {
         // Given
-        when(userRepository.findByUsernameOrEmail(anyString(), anyString()))
+        when(userRepository.findByUsernameOrEmail(anyString()))
                 .thenReturn(Optional.of(testUser));
         when(passwordEncoder.matches(anyString(), anyString())).thenReturn(false);
 
@@ -157,7 +157,7 @@ class AuthServiceTest {
     void testLoginAttemptsTracking() {
         // Given
         testUser.setLoginAttempts(0);
-        when(userRepository.findByUsernameOrEmail(anyString(), anyString()))
+        when(userRepository.findByUsernameOrEmail(anyString()))
                 .thenReturn(Optional.of(testUser));
         when(passwordEncoder.matches(anyString(), anyString())).thenReturn(false);
 
