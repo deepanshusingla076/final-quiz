@@ -1,6 +1,16 @@
-# QWIZZ - Advanced Quiz Application Platform
+# 🚀 QWIZZ - Complete Online Quiz Application 
 
-A comprehensive microservices-based quiz application with AI-powered question generation, built with Spring Boot backend and React frontend.
+[![Java](https://img.shields.io/badge/Java-21-blue.svg)](https://openjdk.org/projects/jdk/21/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.5-brightgreen.svg)](https://spring.io/projects/spring-boot)
+[![React](https://img.shields.io/badge/React-18-blue.svg)](https://reactjs.org/)
+[![Security](https://img.shields.io/badge/Security-JWT%20HS256-red.svg)](https://jwt.io/)
+[![Tests](https://img.shields.io/badge/Tests-Passing-brightgreen.svg)](#testing)
+
+> **A fully-working, secure, enterprise-grade online quiz platform with microservices architecture, AI-powered quiz generation, and modern React frontend.**
+
+## 🎯 **One-Command Startup - Just Run `./start.bat`**
+
+Your complete quiz application is ready to use with a single command!
 
 ## 🚀 Features
 
