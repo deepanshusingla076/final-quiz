@@ -30,7 +30,7 @@ const fetchAPI = async (url, options = {}) => {
   };
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 30000); // Reduced timeout since we're going direct
+  const timeoutId = setTimeout(() => controller.abort(), 120000); // 2 minutes timeout
   config.signal = controller.signal;
 
   const baseUrl = getServiceBaseUrl(url);
@@ -74,7 +74,7 @@ const fetchAPI = async (url, options = {}) => {
     console.error('Fetch error:', error);
     
     if (error.name === 'AbortError') {
-      throw new Error('Request timed out after 2 minutes. Services may still be starting up. Please wait a bit longer and try again. Check if all services are running at:\n- Eureka Server: http://localhost:8761\n- API Gateway: http://localhost:8080\n- User Service: http://localhost:8083');
+      throw new Error('Request timed out after 2 minutes. Services may still be starting up. Please wait a bit longer and try again. Check if all services are running at:\n- Eureka Server: http://localhost:8761\n- API Gateway: http://localhost:8080\n- User Service: http://localhost:8081\n- Quiz Service: http://localhost:8082\n- Result Service: http://localhost:8083\n- Analytics Service: http://localhost:8084');
     }
     
     if (error.message.includes('Failed to fetch') || error.message.includes('ERR_CONNECTION_REFUSED') || error.message.includes('ECONNREFUSED')) {
