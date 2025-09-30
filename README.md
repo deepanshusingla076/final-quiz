@@ -45,19 +45,33 @@ A comprehensive microservices-based quiz application with AI-powered question ge
 1. **Database Setup**: Create a MySQL database named `quiz_apc`
 2. **Gemini AI API**: Obtain Google Gemini AI API key for quiz generation
 
-### Environment Variables (Optional)
-```bash
-# Database Configuration
-DB_URL=jdbc:mysql://localhost:3306/quiz_apc
-DB_USERNAME=root
-DB_PASSWORD=your_password
+### Environment Variables (REQUIRED)
 
-# JWT Security
-JWT_SECRET=your_jwt_secret_key_here
+**⚠️ CRITICAL: The application will NOT start without these environment variables properly configured.**
 
-# AI Configuration
-GEMINI_API_KEY=your_gemini_api_key_here
-```
+1. **Copy the environment template:**
+   ```bash
+   copy .env.example .env
+   ```
+
+2. **Generate a secure JWT secret** (Windows PowerShell):
+   ```powershell
+   [System.Web.Security.Membership]::GeneratePassword(64, 8)
+   ```
+
+3. **Edit `.env` file and set these required values:**
+   ```bash
+   # Database Configuration (REQUIRED)
+   DB_PASSWORD=your_secure_database_password
+   
+   # JWT Security (REQUIRED) 
+   JWT_SECRET=your_64_character_jwt_secret_from_step_2
+   
+   # AI Configuration (REQUIRED for quiz generation)
+   GEMINI_API_KEY=your_gemini_api_key_from_google_ai_studio
+   ```
+
+4. **Never commit the `.env` file** - it's in `.gitignore` for security.
 
 ## 🚀 Quick Start
 
@@ -102,24 +116,19 @@ cd frontend && npm install && npm start
 - **Eureka Dashboard**: http://localhost:8761
 - **Backend Services**: Accessible through API Gateway
 
-## 👥 Default Users
+## � Authentication Setup
 
-For testing purposes, the application includes mock authentication:
+The application uses JWT-based authentication. You'll need to:
 
-### Teacher Account
-- **Username**: teacher or teacher@example.com
-- **Password**: password
-- **Role**: TEACHER
+1. **Set up environment variables** (see Environment Setup section below)
+2. **Create user accounts** through the registration endpoint or frontend
+3. **Use proper credentials** - no demo accounts are provided for security
 
-### Student Account
-- **Username**: student or student@example.com
-- **Password**: password
-- **Role**: STUDENT
-
-### Admin Account
-- **Username**: admin or admin@example.com
-- **Password**: password
-- **Role**: ADMIN
+### Creating Your First Account
+- Visit the frontend at `http://localhost:3000`
+- Click "Sign Up" and create a new account
+- Choose TEACHER role for quiz creation capabilities
+- Choose STUDENT role for quiz-taking capabilities
 
 ## 📊 API Endpoints
 

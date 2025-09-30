@@ -18,8 +18,11 @@ public class JwtUtil {
     private final SecretKey secretKey;
     private final long expirationMs;
 
-    public JwtUtil(@Value("${jwt.secret:2b7e151628aed2a6abf7158809cf4f3c2b7e151628aed2a6abf7158809cf4f3c2b7e151628aed2a6abf7158809cf4f3c}") String jwtSecret,
+    public JwtUtil(@Value("${jwt.secret}") String jwtSecret,
                    @Value("${jwt.expirationMs:3600000}") long expirationMs) {
+        if (jwtSecret == null || jwtSecret.trim().isEmpty()) {
+            throw new IllegalStateException("JWT secret must be provided via JWT_SECRET environment variable");
+        }
         this.secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes());
         this.expirationMs = expirationMs;
     }

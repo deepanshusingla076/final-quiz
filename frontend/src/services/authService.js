@@ -17,7 +17,6 @@ const fetchAPI = async (url, options = {}) => {
   config.signal = controller.signal;
 
   try {
-    console.log(`Making API call to: ${API_BASE_URL}${url}`);
     const response = await fetch(`${API_BASE_URL}${url}`, config);
     clearTimeout(timeoutId);
     
@@ -28,8 +27,6 @@ const fetchAPI = async (url, options = {}) => {
       } catch (e) {
         errorData = { message: `HTTP ${response.status}: ${response.statusText}` };
       }
-      
-      console.error('API Error:', response.status, errorData);
       
       if (response.status === 401) {
         throw new Error('Invalid username or password');
@@ -51,7 +48,6 @@ const fetchAPI = async (url, options = {}) => {
     }
     
     const data = await response.json();
-    console.log('API Response received successfully');
     return data;
   } catch (error) {
     clearTimeout(timeoutId);
