@@ -24,6 +24,7 @@ const QuizAttempt = () => {
 
   useEffect(() => {
     fetchQuiz();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quizId]);
 
   useEffect(() => {
@@ -44,6 +45,7 @@ const QuizAttempt = () => {
 
       return () => clearInterval(timer);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quiz, timeRemaining, autoSubmitted]);
 
   const fetchQuiz = async () => {
@@ -52,8 +54,15 @@ const QuizAttempt = () => {
       
       // Check if user has already attempted this quiz
       try {
-        const userResults = await resultService.getResultsByUser(user.id);
-        const hasAttempted = userResults.some(result => result.quizId.toString() === quizId.toString());
+        const userResultsResponse = await resultService.getResultsByUser(user.id);
+        let userResults = [];
+        if (Array.isArray(userResultsResponse)) {
+          userResults = userResultsResponse;
+        } else if (userResultsResponse && Array.isArray(userResultsResponse.content)) {
+          userResults = userResultsResponse.content;
+        }
+        
+        const hasAttempted = userResults.some(result => result.quizId && result.quizId.toString() === quizId.toString());
         
         if (hasAttempted) {
           toast.error('You have already attempted this quiz.');

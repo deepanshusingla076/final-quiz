@@ -43,4 +43,9 @@ public class AuthController {
         // authService.logout(username);
         return ResponseEntity.ok("Logout successful");
     }
+    
+    @GetMapping("/test")
+    public ResponseEntity<String> test() {
+        return ResponseEntity.ok("Auth service is running and accessible!");
+    }
 }

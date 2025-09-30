@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -20,19 +20,20 @@ const TeacherDashboard = () => {
   });
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchDashboardData();
-  }, [user]);
-
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = useCallback(async () => {
     try {
       setLoading(true);
       
       // Fetch user's quizzes
       let userQuizzes = [];
       try {
-        userQuizzes = await quizService.getQuizzesByUser(user.id);
-        if (!Array.isArray(userQuizzes)) {
+        const quizzesResponse = await quizService.getQuizzesByUser(user.id);
+        // Handle both array and paginated response formats
+        if (Array.isArray(quizzesResponse)) {
+          userQuizzes = quizzesResponse;
+        } else if (quizzesResponse && Array.isArray(quizzesResponse.content)) {
+          userQuizzes = quizzesResponse.content;
+        } else {
           userQuizzes = [];
         }
       } catch (error) {
@@ -88,7 +89,11 @@ const TeacherDashboard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, [fetchDashboardData]);
 
   const handleDeleteQuiz = async (quizId) => {
     if (window.confirm('Are you sure you want to delete this quiz? This action cannot be undone.')) {

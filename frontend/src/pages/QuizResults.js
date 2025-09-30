@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { useAuth } from '../context/AuthContext';
+
 import resultService from '../services/resultService';
 import quizService from '../services/quizService';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -10,18 +10,13 @@ import toast from 'react-hot-toast';
 const QuizResults = () => {
   const { quizId, resultId } = useParams();
   const navigate = useNavigate();
-  const { user } = useAuth();
   
   const [result, setResult] = useState(null);
   const [quiz, setQuiz] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showAnswers, setShowAnswers] = useState(false);
 
-  useEffect(() => {
-    fetchResultData();
-  }, [resultId, quizId]);
-
-  const fetchResultData = async () => {
+  const fetchResultData = useCallback(async () => {
     try {
       setLoading(true);
       
@@ -41,7 +36,11 @@ const QuizResults = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [resultId, quizId, navigate]);
+
+  useEffect(() => {
+    fetchResultData();
+  }, [fetchResultData]);
 
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);

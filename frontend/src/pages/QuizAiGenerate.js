@@ -80,139 +80,14 @@ const QuizAiGenerate = () => {
       
     } catch (error) {
       console.error('Error generating quiz:', error);
-      toast.error('Failed to generate quiz. Please try again.');
-      
-      // Fallback to mock generation if backend fails
-      toast.loading('Using offline mode...', { duration: 2000 });
-      try {
-        await simulateAiGeneration();
-      } catch (fallbackError) {
-        console.error('Fallback generation also failed:', fallbackError);
-        toast.error('Quiz generation failed completely. Please check your connection.');
-        setStep(1);
-      }
+      toast.error('Failed to generate quiz. Please check if the backend services are running.');
+      setStep(1);
     } finally {
       setLoading(false);
     }
   };
 
-  const simulateAiGeneration = async () => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 3000));
 
-    // Generate sample questions based on parameters
-    const questions = [];
-    const { questionCount, topic, difficulty, questionTypes } = generationParams;
-
-    // Create more realistic questions based on the topic
-    const questionTemplates = {
-      MULTIPLE_CHOICE: [
-        {
-          question: `What is the primary purpose of ${topic} in software development?`,
-          options: [
-            `${topic} is used for rapid application development`,
-            `${topic} is primarily for database management`,
-            `${topic} is a testing framework only`,
-            `${topic} is used for mobile app development exclusively`
-          ],
-          correct: 0,
-          explanation: `${topic} is designed to simplify and accelerate the development of enterprise-grade applications.`
-        },
-        {
-          question: `Which annotation is commonly used in ${topic} applications?`,
-          options: [
-            `@Configuration`,
-            `@Component`,
-            `@Service`,
-            `All of the above`
-          ],
-          correct: 3,
-          explanation: `${topic} uses various annotations including @Configuration, @Component, and @Service for different purposes.`
-        },
-        {
-          question: `What is the default port for a ${topic} application?`,
-          options: [
-            `8080`,
-            `3000`,
-            `8000`,
-            `9090`
-          ],
-          correct: 0,
-          explanation: `By default, ${topic} applications run on port 8080.`
-        },
-        {
-          question: `Which dependency injection method is preferred in ${topic}?`,
-          options: [
-            `Field injection`,
-            `Setter injection`,
-            `Constructor injection`,
-            `Method injection`
-          ],
-          correct: 2,
-          explanation: `Constructor injection is recommended as it ensures immutability and makes testing easier.`
-        }
-      ],
-      TRUE_FALSE: [
-        {
-          question: `${topic} provides auto-configuration capabilities.`,
-          correct: 'True',
-          explanation: `${topic} includes auto-configuration that automatically configures your application based on the dependencies present.`
-        },
-        {
-          question: `${topic} requires XML configuration files to work properly.`,
-          correct: 'False',
-          explanation: `${topic} favors Java-based configuration and annotations over XML configuration.`
-        },
-        {
-          question: `${topic} can only be used for web applications.`,
-          correct: 'False',
-          explanation: `${topic} can be used to create various types of applications including standalone, web, and microservices.`
-        }
-      ]
-    };
-
-    for (let i = 0; i < questionCount; i++) {
-      const questionType = questionTypes[Math.floor(Math.random() * questionTypes.length)];
-      const templates = questionTemplates[questionType];
-      const template = templates[i % templates.length];
-      
-      if (questionType === 'MULTIPLE_CHOICE') {
-        questions.push({
-          id: Date.now() + i,
-          questionText: template.question,
-          type: 'MULTIPLE_CHOICE',
-          options: template.options,
-          correctAnswer: template.options[template.correct],
-          points: 1,
-          explanation: template.explanation
-        });
-      } else {
-        questions.push({
-          id: Date.now() + i,
-          questionText: template.question,
-          type: 'TRUE_FALSE',
-          options: ['True', 'False'],
-          correctAnswer: template.correct,
-          points: 1,
-          explanation: template.explanation
-        });
-      }
-    }
-
-    const quiz = {
-      title: `AI Generated Quiz: ${generationParams.topic}`,
-      description: generationParams.description || `An AI-generated quiz about ${generationParams.topic}`,
-      difficulty: generationParams.difficulty,
-      timeLimit: generationParams.timeLimit,
-      isActive: true,
-      questions: questions,
-      generatedAt: new Date().toISOString(),
-      generationSource: 'AI'
-    };
-
-    setGeneratedQuiz(quiz);
-    setStep(3);
-  };
 
   const editQuestion = (question) => {
     setEditingQuestion({ ...question });
@@ -257,7 +132,7 @@ const QuizAiGenerate = () => {
         createdAt: new Date().toISOString()
       };
 
-      const savedQuiz = await quizService.createQuiz(quizToSave);
+      await quizService.createQuiz(quizToSave);
       toast.success('AI-generated quiz saved successfully!');
       navigate('/dashboard');
     } catch (error) {

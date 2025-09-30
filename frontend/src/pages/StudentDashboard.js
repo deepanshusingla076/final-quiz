@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import quizService from '../services/quizService';
 import resultService from '../services/resultService';
@@ -21,19 +20,20 @@ const StudentDashboard = () => {
   });
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchDashboardData();
-  }, [user]);
-
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = useCallback(async () => {
     try {
       setLoading(true);
       
       // Fetch available quizzes
       let quizzes = [];
       try {
-        quizzes = await quizService.getAllQuizzes();
-        if (!Array.isArray(quizzes)) {
+        const quizzesResponse = await quizService.getAllQuizzes();
+        // Handle both array and paginated response formats
+        if (Array.isArray(quizzesResponse)) {
+          quizzes = quizzesResponse;
+        } else if (quizzesResponse && Array.isArray(quizzesResponse.content)) {
+          quizzes = quizzesResponse.content;
+        } else {
           quizzes = [];
         }
       } catch (error) {
@@ -45,8 +45,13 @@ const StudentDashboard = () => {
       // Fetch user's results
       let userResults = [];
       try {
-        userResults = await resultService.getResultsByUser(user.id);
-        if (!Array.isArray(userResults)) {
+        const resultsResponse = await resultService.getResultsByUser(user.id);
+        // Handle both array and paginated response formats
+        if (Array.isArray(resultsResponse)) {
+          userResults = resultsResponse;
+        } else if (resultsResponse && Array.isArray(resultsResponse.content)) {
+          userResults = resultsResponse.content;
+        } else {
           userResults = [];
         }
       } catch (error) {
@@ -97,7 +102,11 @@ const StudentDashboard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, [fetchDashboardData]);
 
   const getScoreColor = (score) => {
     if (score >= 80) return 'excellent';

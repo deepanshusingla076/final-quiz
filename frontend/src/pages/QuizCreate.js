@@ -134,7 +134,7 @@ const QuizCreate = () => {
         createdAt: new Date().toISOString()
       };
 
-      const savedQuiz = await quizService.createQuiz(quizToSave);
+      await quizService.createQuiz(quizToSave);
       toast.success('Quiz created successfully!');
       navigate('/dashboard');
     } catch (error) {

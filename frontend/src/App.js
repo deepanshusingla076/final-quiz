@@ -17,7 +17,6 @@ import Profile from './pages/Profile';
 import QuizResults from './pages/QuizResults';
 import Analytics from './pages/Analytics';
 import NotFound from './pages/NotFound';
-
 // Styles
 import './App.css';
 

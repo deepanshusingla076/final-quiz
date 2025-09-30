@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import quizService from '../services/quizService';
@@ -25,98 +25,41 @@ const Analytics = () => {
     recentActivity: []
   });
 
-  useEffect(() => {
-    fetchAnalytics();
-  }, [user, timeRange]);
-
-  const fetchAnalytics = async () => {
+  const fetchAnalytics = useCallback(async () => {
+    if (!user) return;
+    
     try {
       setLoading(true);
-
-      // Fetch user's quizzes
+      
+      // Fetch real analytics data from backend
+      const analyticsData = await resultService.getUserStatistics(user.id);
       const quizzes = await quizService.getQuizzesByUser(user.id);
       
-      // Simulate analytics data (replace with actual API calls)
-      const mockAnalytics = {
+      setAnalytics({
         overview: {
-          totalQuizzes: quizzes.length,
-          totalAttempts: Math.floor(Math.random() * 500) + 100,
-          totalStudents: Math.floor(Math.random() * 50) + 10,
-          averageScore: Math.floor(Math.random() * 30) + 60
+          totalQuizzes: quizzes?.length || 0,
+          totalAttempts: analyticsData?.totalAttempts || 0,
+          totalStudents: analyticsData?.totalStudents || 0,
+          averageScore: analyticsData?.averageScore || 0
         },
-        quizPerformance: quizzes.map(quiz => ({
-          id: quiz.id,
-          title: quiz.title,
-          attempts: Math.floor(Math.random() * 50) + 5,
-          averageScore: Math.floor(Math.random() * 40) + 50,
-          completionRate: Math.floor(Math.random() * 30) + 70,
-          difficulty: quiz.difficulty,
-          category: quiz.category
-        })),
-        studentActivity: generateStudentActivity(),
-        categoryBreakdown: generateCategoryBreakdown(),
-        recentActivity: generateRecentActivity()
-      };
-
-      setAnalytics(mockAnalytics);
-
+        quizPerformance: analyticsData?.quizPerformance || [],
+        studentActivity: analyticsData?.studentActivity || [],
+        categoryBreakdown: analyticsData?.categoryBreakdown || [],
+        recentActivity: analyticsData?.recentActivity || []
+      });
     } catch (error) {
       console.error('Error fetching analytics:', error);
-      toast.error('Failed to load analytics data');
+      toast.error('Failed to load analytics data. Please ensure backend services are running.');
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, timeRange]);
 
-  const generateStudentActivity = () => {
-    const activities = [];
-    const students = ['Alice Johnson', 'Bob Smith', 'Carol Williams', 'David Brown', 'Eve Davis'];
-    
-    for (let i = 0; i < 10; i++) {
-      activities.push({
-        id: i,
-        student: students[Math.floor(Math.random() * students.length)],
-        action: Math.random() > 0.5 ? 'completed' : 'started',
-        quiz: `Sample Quiz ${i + 1}`,
-        score: Math.random() > 0.5 ? Math.floor(Math.random() * 40) + 60 : null,
-        timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString()
-      });
-    }
+  useEffect(() => {
+    fetchAnalytics();
+  }, [fetchAnalytics]);
 
-    return activities.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-  };
 
-  const generateCategoryBreakdown = () => {
-    const categories = ['SCIENCE', 'MATHEMATICS', 'HISTORY', 'LITERATURE', 'TECHNOLOGY'];
-    return categories.map(category => ({
-      category,
-      count: Math.floor(Math.random() * 10) + 1,
-      averageScore: Math.floor(Math.random() * 30) + 60,
-      totalAttempts: Math.floor(Math.random() * 100) + 20
-    }));
-  };
-
-  const generateRecentActivity = () => {
-    const activities = [];
-    const actions = [
-      'Quiz created: "Introduction to Biology"',
-      'Student completed "Math Quiz #1" with 85%',
-      'Quiz "History of WWII" published',
-      'Student started "Literature Review"',
-      'Quiz "JavaScript Basics" updated'
-    ];
-
-    for (let i = 0; i < 8; i++) {
-      activities.push({
-        id: i,
-        action: actions[Math.floor(Math.random() * actions.length)],
-        timestamp: new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000).toISOString(),
-        type: Math.random() > 0.5 ? 'quiz' : 'student'
-      });
-    }
-
-    return activities.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-  };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -203,7 +146,7 @@ const Analytics = () => {
               <div className="stat-content">
                 <div className="stat-number">{analytics.overview.totalQuizzes}</div>
                 <div className="stat-label">Total Quizzes</div>
-                <div className="stat-change positive">+{Math.floor(Math.random() * 5) + 1} this month</div>
+                <div className="stat-change positive">Updated monthly</div>
               </div>
             </div>
 
@@ -214,7 +157,7 @@ const Analytics = () => {
               <div className="stat-content">
                 <div className="stat-number">{analytics.overview.totalAttempts}</div>
                 <div className="stat-label">Total Attempts</div>
-                <div className="stat-change positive">+{Math.floor(Math.random() * 20) + 5} this week</div>
+                <div className="stat-change positive">Updated weekly</div>
               </div>
             </div>
 
@@ -225,7 +168,7 @@ const Analytics = () => {
               <div className="stat-content">
                 <div className="stat-number">{analytics.overview.totalStudents}</div>
                 <div className="stat-label">Active Students</div>
-                <div className="stat-change positive">+{Math.floor(Math.random() * 3) + 1} this week</div>
+                <div className="stat-change positive">Updated weekly</div>
               </div>
             </div>
 
@@ -236,7 +179,7 @@ const Analytics = () => {
               <div className="stat-content">
                 <div className="stat-number">{analytics.overview.averageScore}%</div>
                 <div className="stat-label">Average Score</div>
-                <div className="stat-change positive">+{Math.floor(Math.random() * 5) + 1}% from last month</div>
+                <div className="stat-change positive">Updated monthly</div>
               </div>
             </div>
           </div>

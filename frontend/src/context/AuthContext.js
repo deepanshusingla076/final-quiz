@@ -41,7 +41,6 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     try {
       const response = await authService.login(credentials);
-      
       const { token: newToken, user: userData } = response;
       
       setToken(newToken);
@@ -55,9 +54,7 @@ export const AuthProvider = ({ children }) => {
       toast.success(`Welcome back, ${userData.firstName}!`);
       return response;
     } catch (error) {
-      console.error('Login error:', error);
-      const errorMessage = error.message || 'Login failed. Please check your credentials and try again.';
-      toast.error(errorMessage);
+      toast.error(error.message || 'Login failed');
       throw error;
     }
   };
@@ -66,23 +63,19 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await authService.register(userData);
       const { token: newToken, user: newUser } = response;
+      
       setToken(newToken);
       setUser(newUser);
       setIsAuthenticated(true);
+      
       localStorage.setItem('token', newToken);
       localStorage.setItem('user', JSON.stringify(newUser));
       authService.setAuthToken(newToken);
+      
       toast.success(`Welcome to QWIZZ, ${newUser.firstName}!`);
       return response;
     } catch (error) {
-      console.error('Registration error:', error);
-      // Show backend error message if available
-      let errorMessage = error.message || 'Registration failed. Please try again.';
-      // If error.message is a generic message, try to parse backend validation errors
-      if (error.response && error.response.data && error.response.data.message) {
-        errorMessage = error.response.data.message;
-      }
-      toast.error(errorMessage);
+      toast.error(error.message || 'Registration failed');
       throw error;
     }
   };
