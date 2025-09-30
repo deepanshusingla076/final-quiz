@@ -1,7 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const QuizCard = ({ quiz, onDelete, showActions = false, showTakeQuiz = false, hasAttempted = false, attemptedResult = null }) => {
+  const navigate = useNavigate();
+  
   const getDifficultyColor = (difficulty) => {
     switch (difficulty?.toLowerCase()) {
       case 'easy': return 'success';
@@ -76,15 +79,15 @@ const QuizCard = ({ quiz, onDelete, showActions = false, showTakeQuiz = false, h
 
       <div className="quiz-card-footer">
         {showTakeQuiz && !hasAttempted && (
-          <motion.a
-            href={`/quiz/${quiz.id}/attempt`}
+          <motion.button
+            onClick={() => navigate(`/quiz/${quiz.id}/attempt`)}
             className="btn btn-primary btn-full"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
             <i className="fas fa-play"></i>
             Take Quiz
-          </motion.a>
+          </motion.button>
         )}
 
         {showTakeQuiz && hasAttempted && attemptedResult && (
@@ -96,15 +99,15 @@ const QuizCard = ({ quiz, onDelete, showActions = false, showTakeQuiz = false, h
             <div className="result-summary">
               Score: {attemptedResult.score}% ({attemptedResult.correctAnswers}/{attemptedResult.totalQuestions})
             </div>
-            <motion.a
-              href={`/quiz/${quiz.id}/results/${attemptedResult.id}`}
+            <motion.button
+              onClick={() => navigate(`/quiz/${quiz.id}/results/${attemptedResult.id}`)}
               className="btn btn-info btn-small"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
               <i className="fas fa-eye"></i>
               View Results
-            </motion.a>
+            </motion.button>
           </div>
         )}
 
@@ -120,25 +123,25 @@ const QuizCard = ({ quiz, onDelete, showActions = false, showTakeQuiz = false, h
 
         {showActions && (
           <div className="quiz-actions">
-            <motion.a
-              href={`/quiz/edit/${quiz.id}`}
+            <motion.button
+              onClick={() => navigate(`/quiz/edit/${quiz.id}`)}
               className="btn btn-secondary"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
               <i className="fas fa-edit"></i>
               Edit
-            </motion.a>
+            </motion.button>
             
-            <motion.a
-              href={`/quiz/results/${quiz.id}`}
+            <motion.button
+              onClick={() => navigate(`/quiz/results/${quiz.id}`)}
               className="btn btn-info"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
               <i className="fas fa-chart-bar"></i>
               Results
-            </motion.a>
+            </motion.button>
 
             <motion.button
               onClick={() => onDelete && onDelete(quiz.id)}

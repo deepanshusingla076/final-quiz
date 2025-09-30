@@ -183,7 +183,7 @@ const TeacherDashboard = () => {
           </div>
         </motion.div>
 
-        {/* Quick Actions - keep only Create and Analytics */}
+        {/* Quick Actions */}
         <motion.div className="quick-actions" variants={itemVariants}>
           <h2>Quick Actions</h2>
           <div className="actions-grid">
@@ -192,7 +192,16 @@ const TeacherDashboard = () => {
                 <div className="action-icon"><i className="fas fa-plus"></i></div>
                 <div className="action-content">
                   <h3>Create Quiz</h3>
-                  <p>Build a custom quiz</p>
+                  <p>Build a custom quiz manually</p>
+                </div>
+              </Link>
+            </motion.div>
+            <motion.div className="action-card ai-generate" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Link to="/quiz/ai-generate" className="action-link">
+                <div className="action-icon"><i className="fas fa-robot"></i></div>
+                <div className="action-content">
+                  <h3>AI Generate</h3>
+                  <p>Let AI create quiz questions</p>
                 </div>
               </Link>
             </motion.div>

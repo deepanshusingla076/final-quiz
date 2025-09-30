@@ -103,6 +103,22 @@ const router = createBrowserRouter([
     ),
   },
   {
+    path: "/quiz/:quizId/results/:resultId",
+    element: (
+      <ProtectedRoute>
+        <QuizResults />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/quiz/edit/:quizId",
+    element: (
+      <ProtectedRoute requiredRole="TEACHER">
+        <QuizCreate />
+      </ProtectedRoute>
+    ),
+  },
+  {
     path: "/analytics",
     element: (
       <ProtectedRoute requiredRole="TEACHER">

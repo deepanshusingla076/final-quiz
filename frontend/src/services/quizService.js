@@ -29,10 +29,27 @@ const quizService = {
   },
 
   generateAiQuiz: async (generationRequest) => {
-    return await fetchAPI('/quizzes/generate', {
-      method: 'POST',
-      body: JSON.stringify(generationRequest),
-    });
+    try {
+      console.log('Attempting AI quiz generation:', generationRequest);
+      const response = await fetchAPI('/quizzes/generate', {
+        method: 'POST',
+        body: JSON.stringify(generationRequest),
+      });
+      console.log('AI quiz generation successful:', response);
+      return response;
+    } catch (error) {
+      console.error('AI quiz generation failed:', error);
+      // Provide user-friendly error message
+      if (error.message.includes('500')) {
+        throw new Error('AI quiz generation is currently unavailable. This may be due to API configuration issues. Please try manual quiz creation instead.');
+      } else if (error.message.includes('404')) {
+        throw new Error('AI quiz generation service not found. Please contact support.');
+      } else if (error.message.includes('401') || error.message.includes('403')) {
+        throw new Error('AI quiz generation access denied. Please check API configuration.');
+      } else {
+        throw new Error(`AI quiz generation failed: ${error.message}`);
+      }
+    }
   },
 
   updateQuiz: async (quizId, quizData) => {

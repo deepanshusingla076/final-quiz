@@ -12,8 +12,12 @@ public class GatewayConfig {
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
-                // User Service - Authentication routes (no JWT filter needed)
-                .route("user-service-auth", r -> r.path("/api/auth/**")
+                // User Service - Authentication routes (no JWT filter needed) - try direct connection first as fallback
+                .route("user-service-auth-direct", r -> r.path("/api/auth/**")
+                        .uri("http://localhost:8081"))
+                        
+                // User Service - Authentication routes via load balancer (backup)
+                .route("user-service-auth", r -> r.path("/api/auth-lb/**")
                         .uri("lb://user-service"))
 
                 // User Service - Protected routes

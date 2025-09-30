@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import quizService from '../services/quizService';
 import DashboardLayout from '../components/DashboardLayout';
 import toast from 'react-hot-toast';
@@ -10,7 +10,10 @@ import '../styles/QuizForms.css';
 const QuizCreate = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { quizId } = useParams();
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(false);
+  const isEditing = !!quizId;
   
   const [quizData, setQuizData] = useState({
     title: '',
@@ -33,6 +36,34 @@ const QuizCreate = () => {
   const [showQuestionForm, setShowQuestionForm] = useState(false);
 
   const difficulties = ['EASY', 'MEDIUM', 'HARD'];
+  
+  // Load quiz data if editing
+  useEffect(() => {
+    const loadQuizData = async () => {
+      if (isEditing) {
+        try {
+          setInitialLoading(true);
+          const quiz = await quizService.getQuizById(quizId);
+          setQuizData({
+            title: quiz.title || '',
+            description: quiz.description || '',
+            difficulty: quiz.difficulty || 'MEDIUM',
+            timeLimit: quiz.timeLimit || 30,
+            isActive: quiz.isActive !== undefined ? quiz.isActive : quiz.active !== undefined ? quiz.active : true,
+            questions: quiz.questions || []
+          });
+        } catch (error) {
+          console.error('Error loading quiz:', error);
+          toast.error('Failed to load quiz data');
+          navigate('/dashboard');
+        } finally {
+          setInitialLoading(false);
+        }
+      }
+    };
+
+    loadQuizData();
+  }, [isEditing, quizId, navigate]);
   const questionTypes = [
     { value: 'MULTIPLE_CHOICE', label: 'Multiple Choice' },
     { value: 'TRUE_FALSE', label: 'True/False' },
@@ -131,15 +162,24 @@ const QuizCreate = () => {
       const quizToSave = {
         ...quizData,
         createdBy: user.id,
-        createdAt: new Date().toISOString()
+        totalQuestions: quizData.questions.length,
       };
 
-      await quizService.createQuiz(quizToSave);
-      toast.success('Quiz created successfully!');
+      if (isEditing) {
+        // Update existing quiz
+        await quizService.updateQuiz(quizId, quizToSave);
+        toast.success('Quiz updated successfully!');
+      } else {
+        // Create new quiz
+        quizToSave.createdAt = new Date().toISOString();
+        await quizService.createQuiz(quizToSave);
+        toast.success('Quiz created successfully!');
+      }
+      
       navigate('/dashboard');
     } catch (error) {
-      console.error('Error creating quiz:', error);
-      toast.error('Failed to create quiz. Please try again.');
+      console.error('Error saving quiz:', error);
+      toast.error(`Failed to ${isEditing ? 'update' : 'create'} quiz. Please try again.`);
     } finally {
       setLoading(false);
     }
@@ -155,6 +195,17 @@ const QuizCreate = () => {
     visible: { y: 0, opacity: 1 }
   };
 
+  if (initialLoading) {
+    return (
+      <DashboardLayout>
+        <div className="loading-container">
+          <div className="spinner"></div>
+          <p>Loading quiz data...</p>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
   return (
     <DashboardLayout>
       <motion.div
@@ -165,8 +216,8 @@ const QuizCreate = () => {
       >
         <motion.div className="page-header" variants={itemVariants}>
           <h1>
-            <i className="fas fa-plus-circle"></i>
-            Create New Quiz
+            <i className={`fas ${isEditing ? 'fa-edit' : 'fa-plus-circle'}`}></i>
+            {isEditing ? 'Edit Quiz' : 'Create New Quiz'}
           </h1>
         </motion.div>
 
@@ -496,12 +547,12 @@ const QuizCreate = () => {
               {loading ? (
                 <>
                   <div className="spinner small"></div>
-                  Creating Quiz...
+                  {isEditing ? 'Updating Quiz...' : 'Creating Quiz...'}
                 </>
               ) : (
                 <>
                   <i className="fas fa-save"></i>
-                  Create Quiz
+                  {isEditing ? 'Update Quiz' : 'Create Quiz'}
                 </>
               )}
             </button>

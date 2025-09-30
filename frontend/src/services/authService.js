@@ -1,4 +1,21 @@
+// Direct service connections (bypassing problematic API Gateway)
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/api';
+const AUTH_BASE_URL = process.env.REACT_APP_AUTH_URL || 'http://localhost:8081/api'; // User service
+const QUIZ_BASE_URL = process.env.REACT_APP_QUIZ_URL || 'http://localhost:8082/api'; // Question Bank service
+const RESULT_BASE_URL = process.env.REACT_APP_RESULT_URL || 'http://localhost:8083/api'; // Result service
+const ANALYTICS_BASE_URL = process.env.REACT_APP_ANALYTICS_URL || 'http://localhost:8084/api'; // Analytics service
+
+// Smart routing function that directs requests to appropriate microservices
+const getServiceBaseUrl = (url) => {
+  if (url.startsWith('/auth')) return AUTH_BASE_URL;
+  if (url.startsWith('/users')) return AUTH_BASE_URL;
+  if (url.startsWith('/quizzes') || url.startsWith('/questions')) return QUIZ_BASE_URL;
+  if (url.startsWith('/results')) return RESULT_BASE_URL;
+  if (url.startsWith('/analytics') || url.startsWith('/reports')) return ANALYTICS_BASE_URL;
+  
+  // Default to API Gateway for unknown endpoints
+  return API_BASE_URL;
+};
 
 const fetchAPI = async (url, options = {}) => {
   const token = localStorage.getItem('token');
@@ -13,11 +30,14 @@ const fetchAPI = async (url, options = {}) => {
   };
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 120000); // Increased to 120 seconds for service startup
+  const timeoutId = setTimeout(() => controller.abort(), 30000); // Reduced timeout since we're going direct
   config.signal = controller.signal;
 
+  const baseUrl = getServiceBaseUrl(url);
+  console.log(`[DEBUG] Routing ${url} to ${baseUrl}`);
+  
   try {
-    const response = await fetch(`${API_BASE_URL}${url}`, config);
+    const response = await fetch(`${baseUrl}${url}`, config);
     clearTimeout(timeoutId);
     
     if (!response.ok) {
@@ -58,7 +78,7 @@ const fetchAPI = async (url, options = {}) => {
     }
     
     if (error.message.includes('Failed to fetch') || error.message.includes('ERR_CONNECTION_REFUSED') || error.message.includes('ECONNREFUSED')) {
-      throw new Error('Cannot connect to API Gateway on localhost:8080. Please ensure all backend services are running and registered:\n\n1. Check Eureka Dashboard: http://localhost:8761\n2. Verify services are registered\n3. Wait 2-3 minutes after starting services\n4. Check MySQL is running\n\nIf services just started, please wait a few minutes for complete registration.');
+      throw new Error(`Cannot connect to service at ${baseUrl}. Please ensure all backend services are running:\n\n1. User Service: localhost:8081\n2. Quiz Service: localhost:8082\n3. Result Service: localhost:8083\n4. Analytics Service: localhost:8084\n5. Check MySQL is running\n\nIf services just started, please wait a few minutes for complete startup.`);
     }
     
     if (error.message.includes('TypeError: Failed to fetch')) {
@@ -90,35 +110,83 @@ const authService = {
     }
   },
 
-  // Register user
+  // Register user - use direct user service connection
   register: async (userData) => {
-    return await fetchAPI('/auth/register', {
+    const response = await fetch(`${AUTH_BASE_URL}/auth/register`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify(userData),
     });
+    
+    if (!response.ok) {
+      let errorData;
+      try {
+        errorData = await response.json();
+      } catch (e) {
+        errorData = { message: `HTTP ${response.status}: ${response.statusText}` };
+      }
+      throw new Error(errorData.message || `Registration failed with status ${response.status}`);
+    }
+    
+    return await response.json();
   },
 
-  // Login user
+  // Login user - use direct user service connection
   login: async (credentials) => {
-    return await fetchAPI('/auth/login', {
+    const response = await fetch(`${AUTH_BASE_URL}/auth/login`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify(credentials),
     });
+    
+    if (!response.ok) {
+      let errorData;
+      try {
+        errorData = await response.json();
+      } catch (e) {
+        errorData = { message: `HTTP ${response.status}: ${response.statusText}` };
+      }
+      
+      if (response.status === 401) {
+        throw new Error('Invalid username or password');
+      }
+      throw new Error(errorData.message || `Login failed with status ${response.status}`);
+    }
+    
+    return await response.json();
   },
 
-  // Refresh token
+  // Refresh token - use direct user service connection
   refreshToken: async (refreshToken) => {
-    return await fetchAPI('/auth/refresh', {
+    const response = await fetch(`${AUTH_BASE_URL}/auth/refresh`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({ refreshToken }),
     });
+    
+    if (!response.ok) {
+      throw new Error('Token refresh failed');
+    }
+    
+    return await response.json();
   },
 
-  // Logout user
+  // Logout user - use direct user service connection
   logout: async () => {
     try {
-      await fetchAPI('/auth/logout', {
+      const token = localStorage.getItem('token');
+      await fetch(`${AUTH_BASE_URL}/auth/logout`, {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token && { 'Authorization': `Bearer ${token}` }),
+        },
       });
     } catch (error) {
       console.error('Logout error:', error);

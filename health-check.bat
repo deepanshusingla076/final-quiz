@@ -13,7 +13,7 @@ powershell -Command "try { $response = Invoke-WebRequest -Uri 'http://localhost:
 
 echo.
 echo [2/6] Checking API Gateway (8080)...
-powershell -Command "try { $response = Invoke-WebRequest -Uri 'http://localhost:8080' -TimeoutSec 5; Write-Host 'API Gateway: RUNNING' -ForegroundColor Green } catch { Write-Host 'API Gateway: NOT RESPONDING' -ForegroundColor Red }"
+powershell -Command "try { $response = Invoke-WebRequest -Uri 'http://localhost:8080/actuator/health' -TimeoutSec 5; Write-Host 'API Gateway: RUNNING' -ForegroundColor Green } catch { Write-Host 'API Gateway: NOT RESPONDING' -ForegroundColor Red }"
 
 echo.
 echo [3/6] Checking User Service (8081)...
